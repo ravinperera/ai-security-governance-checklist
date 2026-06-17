@@ -1,0 +1,3 @@
+System Name,Owner,Technical Owner,Vendor/Internal,Model Provider,Use Case,Users,Data Classification,Personal Data,Customer Data,Approved Status,Approval Date,Review Date,Notes
+GitHub Copilot,Engineering,DevOps,Vendor,GitHub/OpenAI,Code assistance,Developers,Internal,No,No,Approved,2026-06-17,2026-12-17,Use governed by company AI usage policy
+Internal Support Bot,Customer Support,Platform,Internal,Example LLM Provider,Support knowledge retrieval,Support team,Confidential,Yes,Yes,Under Review,,2026-07-17,Requires privacy and access control review
