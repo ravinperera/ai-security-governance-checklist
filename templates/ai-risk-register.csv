@@ -1,0 +1,4 @@
+Risk ID,AI System,Use Case,Risk Description,Risk Category,Likelihood,Impact,Risk Rating,Existing Controls,Mitigation Plan,Owner,Due Date,Residual Risk,Status
+AI-RISK-001,Example AI Tool,Code generation,AI-generated code may introduce insecure patterns,Security,Medium,High,High,Peer review and SAST,Require secure coding review and dependency scanning,Engineering Lead,2026-07-31,Medium,Open
+AI-RISK-002,Example Chat Tool,Employee productivity,Confidential data may be entered into unapproved AI tools,Data Protection,Medium,High,High,AI usage policy,Publish approved tools and train users,Security Lead,2026-07-31,Medium,Open
+AI-RISK-003,Example RAG System,Internal knowledge search,Users may retrieve documents they are not authorised to access,Access Control,Low,High,Medium,SSO and document ACLs,Validate access control before retrieval,Platform Lead,2026-08-15,Low,Open
