@@ -1,0 +1,4 @@
+Tool Name,Vendor,Approved Use,Prohibited Use,User Group,SSO Required,Data Allowed,Data Not Allowed,Owner,Status,Review Date
+GitHub Copilot,GitHub,Code assistance and documentation drafts,Secrets customer data or confidential code in unapproved contexts,Engineering,Yes,Internal non-sensitive code context,Secrets credentials customer data,Engineering Lead,Approved,2026-12-17
+ChatGPT Enterprise,OpenAI,Drafting summarisation analysis and approved productivity use,Regulated customer data unless approved,All Staff,Yes,Internal approved content,Secrets credentials personal data unless approved,Security Lead,Approved,2026-12-17
+Unapproved Public AI Tools,Various,None,Company data source code credentials customer data,All Staff,N/A,None,All company data,Security Lead,Blocked,2026-12-17
