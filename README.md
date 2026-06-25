@@ -37,6 +37,7 @@ This repository focuses on practical questions:
 │   ├── ai-system-inventory.csv
 │   ├── ai-vendor-questionnaire.md
 │   └── approved-ai-tools-register.csv
+├── CONTRIBUTING.md
 └── README.md
 ```
 
@@ -48,6 +49,10 @@ This repository focuses on practical questions:
 4. Define approved tools using `templates/approved-ai-tools-register.csv`.
 5. Use `checklists/ai-vendor-assessment.md` before approving external AI vendors.
 6. Use the mappings folder to align controls with OWASP LLM Top 10, NIST AI RMF, and ISO 27001-style governance.
+
+## Contributing
+
+Contributions are welcome. See `CONTRIBUTING.md` for the preferred workflow, checklist wording guidance, and safety rules for examples and templates.
 
 ## Who This Is For
 
