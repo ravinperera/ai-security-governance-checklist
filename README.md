@@ -28,7 +28,8 @@ This repository focuses on practical questions:
 │   ├── enterprise-ai-usage-policy.md
 │   ├── ai-vendor-assessment.md
 │   ├── shadow-ai-risk-checklist.md
-│   └── ai-incident-response-playbook.md
+│   ├── ai-incident-response-playbook.md
+│   └── ai-system-periodic-review-checklist.md
 ├── mappings/
 │   ├── owasp-llm-top-10-mapping.md
 │   ├── nist-ai-rmf-mapping.md
@@ -49,8 +50,9 @@ This repository focuses on practical questions:
 3. Record risks in `templates/ai-risk-register.csv`.
 4. Define approved tools using `templates/approved-ai-tools-register.csv`.
 5. Use `checklists/ai-vendor-assessment.md` before approving external AI vendors.
-6. Use `checklists/ai-incident-response-playbook.md` for suspected data exposure, prompt injection, compromised credentials, or unsafe automated actions.
-7. Use the mappings folder to align controls with OWASP LLM Top 10, NIST AI RMF, and ISO 27001-style governance.
+6. Use `checklists/ai-system-periodic-review-checklist.md` for scheduled and event-driven reassessments of approved systems.
+7. Use `checklists/ai-incident-response-playbook.md` for suspected data exposure, prompt injection, compromised credentials, or unsafe automated actions.
+8. Use the mappings folder to align controls with OWASP LLM Top 10, NIST AI RMF, and ISO 27001-style governance.
 
 ## Contributing
 
