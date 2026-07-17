@@ -46,19 +46,31 @@ This repository focuses on practical questions:
 └── README.md
 ```
 
-## Quick Start
+## 30-Second Company Adoption Quick Start
 
-1. Start with `checklists/ai-governance-checklist.md`.
-2. Use `checklists/ai-data-handling-decision-guide.md` before entering prompts, uploading files, connecting data sources, or enabling AI integrations.
-3. Create an AI system inventory using `templates/ai-system-inventory.csv`.
-4. Assign control ownership, evidence, review frequency, and escalation paths using `templates/ai-control-ownership-matrix.csv`.
-5. Record risks in `templates/ai-risk-register.csv`.
-6. Define approved tools using `templates/approved-ai-tools-register.csv`.
-7. Use `checklists/ai-vendor-assessment.md` before approving external AI vendors.
-8. Use `templates/ai-tool-exception-request.md` when a time-limited exception is necessary, and require an owner, compensating controls, approval, and an expiry date.
-9. Use `checklists/ai-system-periodic-review-checklist.md` for scheduled and event-driven reassessments of approved systems.
-10. Use `checklists/ai-incident-response-playbook.md` for suspected data exposure, prompt injection, compromised credentials, or unsafe automated actions.
-11. Use the mappings folder to align controls with OWASP LLM Top 10, NIST AI RMF, and ISO 27001-style governance.
+Use the repository in this order:
+
+1. **Inventory:** copy `templates/ai-system-inventory.csv` and record every approved, trial, internally developed, and known shadow AI system.
+2. **Risk register:** copy `templates/ai-risk-register.csv`, record the main data, security, legal, operational, and vendor risks, and assign an owner to each one.
+3. **Usage policy:** adapt `checklists/enterprise-ai-usage-policy.md` and `checklists/ai-data-handling-decision-guide.md` so staff know which tools and data uses are allowed.
+4. **Vendor review:** assess external providers with `checklists/ai-vendor-assessment.md` and retain the completed evidence before approval.
+5. **Application checklist:** review internally built LLM, RAG, and agent applications with `checklists/llm-application-security-checklist.md` before production use.
+
+Start with a small, named group of systems rather than trying to complete every control at once. Treat the templates as working records with owners, review dates, evidence links, and time-limited exceptions.
+
+### Suggested One-Week Rollout
+
+| Day | Focus | Practical outcome |
+| --- | --- | --- |
+| 1 | Assign an executive sponsor and working owners from engineering, security, compliance, procurement, and legal where relevant. | Named decision-makers and a shared working location for governance records. |
+| 2 | Build the initial AI system inventory, including pilots and known shadow AI usage. | A prioritised list of systems, vendors, owners, data types, and business purposes. |
+| 3 | Create the first risk-register entries for the highest-impact systems. | Initial risk ratings, mitigations, due dates, and accountable owners. |
+| 4 | Publish an interim usage policy and data-handling rules. | Clear guidance on approved tools, prohibited data, human review, and exception requests. |
+| 5 | Complete vendor and application reviews for the highest-priority systems. | Approval, remediation, restricted use, or rejection decisions with retained evidence. |
+| 6 | Review gaps, assign follow-up actions, and define escalation and incident contacts. | A tracked remediation plan and clear path for suspected data exposure or unsafe AI behaviour. |
+| 7 | Approve the first governance baseline and schedule periodic reviews. | A documented baseline, review cadence, and next checkpoint for unresolved risks. |
+
+After the first week, use `templates/ai-control-ownership-matrix.csv` to formalise ownership, `templates/approved-ai-tools-register.csv` to publish approved tools, and `checklists/ai-system-periodic-review-checklist.md` for scheduled and event-driven reassessments.
 
 ## Contributing
 
