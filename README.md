@@ -36,6 +36,7 @@ This repository focuses on practical questions:
 │   ├── nist-ai-rmf-mapping.md
 │   └── iso27001-ai-control-mapping.md
 ├── templates/
+│   ├── ai-control-ownership-matrix.csv
 │   ├── ai-risk-register.csv
 │   ├── ai-system-inventory.csv
 │   ├── ai-vendor-questionnaire.md
@@ -50,13 +51,14 @@ This repository focuses on practical questions:
 1. Start with `checklists/ai-governance-checklist.md`.
 2. Use `checklists/ai-data-handling-decision-guide.md` before entering prompts, uploading files, connecting data sources, or enabling AI integrations.
 3. Create an AI system inventory using `templates/ai-system-inventory.csv`.
-4. Record risks in `templates/ai-risk-register.csv`.
-5. Define approved tools using `templates/approved-ai-tools-register.csv`.
-6. Use `checklists/ai-vendor-assessment.md` before approving external AI vendors.
-7. Use `templates/ai-tool-exception-request.md` when a time-limited exception is necessary, and require an owner, compensating controls, approval, and an expiry date.
-8. Use `checklists/ai-system-periodic-review-checklist.md` for scheduled and event-driven reassessments of approved systems.
-9. Use `checklists/ai-incident-response-playbook.md` for suspected data exposure, prompt injection, compromised credentials, or unsafe automated actions.
-10. Use the mappings folder to align controls with OWASP LLM Top 10, NIST AI RMF, and ISO 27001-style governance.
+4. Assign control ownership, evidence, review frequency, and escalation paths using `templates/ai-control-ownership-matrix.csv`.
+5. Record risks in `templates/ai-risk-register.csv`.
+6. Define approved tools using `templates/approved-ai-tools-register.csv`.
+7. Use `checklists/ai-vendor-assessment.md` before approving external AI vendors.
+8. Use `templates/ai-tool-exception-request.md` when a time-limited exception is necessary, and require an owner, compensating controls, approval, and an expiry date.
+9. Use `checklists/ai-system-periodic-review-checklist.md` for scheduled and event-driven reassessments of approved systems.
+10. Use `checklists/ai-incident-response-playbook.md` for suspected data exposure, prompt injection, compromised credentials, or unsafe automated actions.
+11. Use the mappings folder to align controls with OWASP LLM Top 10, NIST AI RMF, and ISO 27001-style governance.
 
 ## Contributing
 
