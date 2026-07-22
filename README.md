@@ -42,6 +42,9 @@ This repository focuses on practical questions:
 │   ├── ai-vendor-questionnaire.md
 │   ├── ai-tool-exception-request.md
 │   └── approved-ai-tools-register.csv
+├── examples/
+│   ├── example-ai-risk-register.csv
+│   └── example-ai-system-inventory.csv
 ├── CONTRIBUTING.md
 └── README.md
 ```
@@ -51,14 +54,24 @@ This repository focuses on practical questions:
 1. Start with `checklists/ai-governance-checklist.md`.
 2. Use `checklists/ai-data-handling-decision-guide.md` before entering prompts, uploading files, connecting data sources, or enabling AI integrations.
 3. Create an AI system inventory using `templates/ai-system-inventory.csv`.
-4. Assign control ownership, evidence, review frequency, and escalation paths using `templates/ai-control-ownership-matrix.csv`.
-5. Record risks in `templates/ai-risk-register.csv`.
-6. Define approved tools using `templates/approved-ai-tools-register.csv`.
-7. Use `checklists/ai-vendor-assessment.md` before approving external AI vendors.
-8. Use `templates/ai-tool-exception-request.md` when a time-limited exception is necessary, and require an owner, compensating controls, approval, and an expiry date.
-9. Use `checklists/ai-system-periodic-review-checklist.md` for scheduled and event-driven reassessments of approved systems.
-10. Use `checklists/ai-incident-response-playbook.md` for suspected data exposure, prompt injection, compromised credentials, or unsafe automated actions.
-11. Use the mappings folder to align controls with OWASP LLM Top 10, NIST AI RMF, and ISO 27001-style governance.
+4. Review `examples/example-ai-system-inventory.csv` to see a fictional completed inventory with different approval states and data classifications.
+5. Assign control ownership, evidence, review frequency, and escalation paths using `templates/ai-control-ownership-matrix.csv`.
+6. Record risks in `templates/ai-risk-register.csv`, using `examples/example-ai-risk-register.csv` as a guide to the expected level of detail.
+7. Define approved tools using `templates/approved-ai-tools-register.csv`.
+8. Use `checklists/ai-vendor-assessment.md` before approving external AI vendors.
+9. Use `templates/ai-tool-exception-request.md` when a time-limited exception is necessary, and require an owner, compensating controls, approval, and an expiry date.
+10. Use `checklists/ai-system-periodic-review-checklist.md` for scheduled and event-driven reassessments of approved systems.
+11. Use `checklists/ai-incident-response-playbook.md` for suspected data exposure, prompt injection, compromised credentials, or unsafe automated actions.
+12. Use the mappings folder to align controls with OWASP LLM Top 10, NIST AI RMF, and ISO 27001-style governance.
+
+## Completed Examples
+
+The files in `examples/` contain fictional organisations, systems, owners, providers, dates, and risks. They demonstrate how teams can complete the blank templates without exposing real company, customer, employee, vendor, or security information.
+
+- [`example-ai-system-inventory.csv`](examples/example-ai-system-inventory.csv) shows approved, conditionally approved, pilot, and under-review systems.
+- [`example-ai-risk-register.csv`](examples/example-ai-risk-register.csv) shows security, access-control, data-protection, and operational-safety risks with controls, owners, target dates, and residual-risk decisions.
+
+Copy the matching file from `templates/` for real use. Do not replace the fictional rows with sensitive production details in a public repository.
 
 ## Contributing
 
