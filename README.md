@@ -15,8 +15,8 @@ This repository focuses on practical questions:
 - How should AI-generated code be reviewed?
 - How do we manage prompt injection, data leakage, and insecure outputs?
 - How do we assess AI vendors?
-- What evidence do we need for ISO 27001, SOC 2, GDPR, and client assurance reviews?
-- How do we track AI systems, risks, owners, and mitigations?
+- What evidence do we need for ISO 27001, SOC 2, GDPR, the EU AI Act, and client assurance reviews?
+- How do we track AI systems, risks, owners, mitigations, transparency notices, and generated-content controls?
 
 ## What's Included
 
@@ -30,7 +30,8 @@ This repository focuses on practical questions:
 │   ├── ai-vendor-assessment.md
 │   ├── shadow-ai-risk-checklist.md
 │   ├── ai-incident-response-playbook.md
-│   └── ai-system-periodic-review-checklist.md
+│   ├── ai-system-periodic-review-checklist.md
+│   └── eu-ai-act-article-50-transparency.md
 ├── mappings/
 │   ├── owasp-llm-top-10-mapping.md
 │   ├── nist-ai-rmf-mapping.md
@@ -39,6 +40,7 @@ This repository focuses on practical questions:
 │   ├── ai-control-ownership-matrix.csv
 │   ├── ai-risk-register.csv
 │   ├── ai-system-inventory.csv
+│   ├── ai-transparency-evidence-register.csv
 │   ├── ai-vendor-questionnaire.md
 │   ├── ai-tool-exception-request.md
 │   └── approved-ai-tools-register.csv
@@ -58,7 +60,8 @@ This repository focuses on practical questions:
 8. Use `templates/ai-tool-exception-request.md` when a time-limited exception is necessary, and require an owner, compensating controls, approval, and an expiry date.
 9. Use `checklists/ai-system-periodic-review-checklist.md` for scheduled and event-driven reassessments of approved systems.
 10. Use `checklists/ai-incident-response-playbook.md` for suspected data exposure, prompt injection, compromised credentials, or unsafe automated actions.
-11. Use the mappings folder to align controls with OWASP LLM Top 10, NIST AI RMF, and ISO 27001-style governance.
+11. For systems or content with an EU connection, use the [EU AI Act Article 50 transparency readiness checklist](checklists/eu-ai-act-article-50-transparency.md) to triage provider and deployer duties, and record implementation evidence in [`templates/ai-transparency-evidence-register.csv`](templates/ai-transparency-evidence-register.csv).
+12. Use the mappings folder to align controls with OWASP LLM Top 10, NIST AI RMF, and ISO 27001-style governance.
 
 ## Contributing
 
@@ -69,7 +72,7 @@ Contributions are welcome. See `CONTRIBUTING.md` for the preferred workflow, che
 - SaaS companies adopting AI tools
 - Engineering and DevOps teams using AI coding assistants
 - Security teams reviewing AI risks
-- Compliance teams preparing for ISO 27001, SOC 2, GDPR, or client due diligence
+- Compliance teams preparing for ISO 27001, SOC 2, GDPR, EU AI Act, or client due diligence
 - Startups that need simple AI governance without heavy bureaucracy
 - Enterprises trying to control shadow AI usage
 
@@ -80,6 +83,7 @@ Contributions are welcome. See `CONTRIBUTING.md` for the preferred workflow, che
 - Keep an inventory of approved AI systems and vendors.
 - Assign owners for AI systems and risks.
 - Review AI outputs before using them in production, legal, customer, financial, or security-sensitive contexts.
+- Make required AI-interaction notices and generated-content disclosures clear, accessible, testable, and evidence-backed.
 - Monitor for shadow AI usage and data leakage.
 - Require vendor due diligence before approving AI tools.
 
@@ -92,7 +96,8 @@ This repository is designed to help teams reason about controls using:
 - ISO 27001-style information security governance
 - SOC 2-style access, change, risk, and vendor management evidence
 - GDPR-style personal data protection principles
+- EU AI Act Article 50-style transparency readiness for certain providers, deployers, interactions, and AI-generated or manipulated content
 
 ## Disclaimer
 
-This repository is not legal advice, compliance certification, or a replacement for a formal risk assessment. Treat it as a practical starting point and adapt it to your organisation's risk profile, regulatory requirements, and legal obligations.
+This repository is not legal advice, compliance certification, or a replacement for a formal risk assessment. Treat it as a practical starting point and adapt it to your organisation's risk profile, regulatory requirements, legal obligations, system role, market, and current official guidance.
