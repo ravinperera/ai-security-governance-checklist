@@ -12,7 +12,7 @@ labels: [documentation]
 - [ ] Questionnaire
 - [ ] Framework mapping
 - [ ] Example
-- [ ] Other: 
+- [ ] Other:
 
 ## Use case
 

@@ -72,6 +72,17 @@ Start with a small, named group of systems rather than trying to complete every 
 
 After the first week, use `templates/ai-control-ownership-matrix.csv` to formalise ownership, `templates/approved-ai-tools-register.csv` to publish approved tools, and `checklists/ai-system-periodic-review-checklist.md` for scheduled and event-driven reassessments.
 
+## Validate Locally
+
+Run the dependency-free checks before opening a pull request:
+
+```bash
+python3 -m unittest discover -s tests -p 'test_validate_repository.py' -v
+python3 scripts/validate_repository.py
+```
+
+The validator checks tracked Markdown, CSV, JSON, and YAML files for UTF-8 text hygiene, validates local Markdown links, and verifies that CSV templates have usable, consistent headers and row widths. GitHub Actions runs the same checks without cloud credentials or repository write permissions.
+
 ## Contributing
 
 Contributions are welcome. See `CONTRIBUTING.md` for the preferred workflow, checklist wording guidance, and safety rules for examples and templates.
