@@ -26,7 +26,7 @@ Who would normally own this control?
 - [ ] Compliance / Governance
 - [ ] Product
 - [ ] Legal / Privacy
-- [ ] Other: 
+- [ ] Other:
 
 ## Evidence or validation
 
