@@ -24,6 +24,7 @@ This repository focuses on practical questions:
 .
 ├── checklists/
 │   ├── ai-governance-checklist.md
+│   ├── role-based-checklists.md
 │   ├── ai-data-handling-decision-guide.md
 │   ├── llm-application-security-checklist.md
 │   ├── enterprise-ai-usage-policy.md
@@ -57,6 +58,8 @@ Use the repository in this order:
 5. **Application checklist:** review internally built LLM, RAG, and agent applications with `checklists/llm-application-security-checklist.md` before production use.
 
 Start with a small, named group of systems rather than trying to complete every control at once. Treat the templates as working records with owners, review dates, evidence links, and time-limited exceptions.
+
+Use the [role-based AI governance checklists](checklists/role-based-checklists.md) to give engineering, security, compliance, procurement and leadership a short view of their responsibilities, evidence and handoffs without creating separate control frameworks.
 
 ### Suggested One-Week Rollout
 
