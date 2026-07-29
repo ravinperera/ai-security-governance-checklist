@@ -43,6 +43,9 @@ This repository focuses on practical questions:
 │   ├── ai-vendor-questionnaire.md
 │   ├── ai-tool-exception-request.md
 │   └── approved-ai-tools-register.csv
+├── examples/
+│   ├── example-ai-risk-register.csv
+│   └── example-ai-system-inventory.csv
 ├── CONTRIBUTING.md
 └── README.md
 ```
@@ -51,13 +54,15 @@ This repository focuses on practical questions:
 
 Use the repository in this order:
 
-1. **Inventory:** copy `templates/ai-system-inventory.csv` and record every approved, trial, internally developed, and known shadow AI system.
-2. **Risk register:** copy `templates/ai-risk-register.csv`, record the main data, security, legal, operational, and vendor risks, and assign an owner to each one.
+1. **Inventory:** copy `templates/ai-system-inventory.csv` and record every approved, trial, internally developed, and known shadow AI system. Review the [fictional completed inventory](examples/example-ai-system-inventory.csv) for the expected level of detail.
+2. **Risk register:** copy `templates/ai-risk-register.csv`, record the main data, security, legal, operational, and vendor risks, and assign an owner to each one. Review the [fictional completed risk register](examples/example-ai-risk-register.csv) for example ratings, controls, mitigations, ownership, and status wording.
 3. **Usage policy:** adapt `checklists/enterprise-ai-usage-policy.md` and `checklists/ai-data-handling-decision-guide.md` so staff know which tools and data uses are allowed.
 4. **Vendor review:** assess external providers with `checklists/ai-vendor-assessment.md` and retain the completed evidence before approval.
 5. **Application checklist:** review internally built LLM, RAG, and agent applications with `checklists/llm-application-security-checklist.md` before production use.
 
 Start with a small, named group of systems rather than trying to complete every control at once. Treat the templates as working records with owners, review dates, evidence links, and time-limited exceptions.
+
+The completed registers are fictional examples only. They demonstrate record quality and do not recommend any named tool, provider, risk rating, approval decision, or control set for a real organisation.
 
 Use the [role-based AI governance checklists](checklists/role-based-checklists.md) to give engineering, security, compliance, procurement and leadership a short view of their responsibilities, evidence and handoffs without creating separate control frameworks.
 
