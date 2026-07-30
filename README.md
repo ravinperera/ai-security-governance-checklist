@@ -22,6 +22,10 @@ This repository focuses on practical questions:
 
 ```text
 .
+├── .github/
+│   └── ISSUE_TEMPLATE/
+│       ├── checklist-improvement.md
+│       └── framework-mapping-request.md
 ├── checklists/
 │   ├── ai-governance-checklist.md
 │   ├── role-based-checklists.md
@@ -46,6 +50,7 @@ This repository focuses on practical questions:
 ├── examples/
 │   ├── example-ai-risk-register.csv
 │   └── example-ai-system-inventory.csv
+├── CHANGELOG.md
 ├── CONTRIBUTING.md
 └── README.md
 ```
@@ -93,7 +98,7 @@ The validator checks tracked Markdown, CSV, JSON, and YAML files for UTF-8 text 
 
 ## Contributing
 
-Contributions are welcome. See `CONTRIBUTING.md` for the preferred workflow, checklist wording guidance, and safety rules for examples and templates.
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the preferred workflow, checklist wording guidance, framework mapping expectations, validation commands, and safety rules for examples and templates. Notable changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 
 ## Who This Is For
 
