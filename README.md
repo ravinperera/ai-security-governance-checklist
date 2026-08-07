@@ -36,6 +36,8 @@ This repository focuses on practical questions:
 │   ├── shadow-ai-risk-checklist.md
 │   ├── ai-incident-response-playbook.md
 │   └── ai-system-periodic-review-checklist.md
+├── docs/
+│   └── threat-model.md
 ├── mappings/
 │   ├── owasp-llm-top-10-mapping.md
 │   ├── nist-ai-rmf-mapping.md
@@ -118,6 +120,10 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the prefer
 - Review AI outputs before using them in production, legal, customer, financial, or security-sensitive contexts.
 - Monitor for shadow AI usage and data leakage.
 - Require vendor due diligence before approving AI tools.
+
+## Repository Threat Model
+
+The [repository threat model](docs/threat-model.md) documents the assets, threat actors, trust boundaries, mitigations, residual risks, and review triggers for this public guidance repository. It deliberately separates repository-content risk from the implementation-specific threat model required for any organisation that adopts these controls in a live environment.
 
 ## Framework Alignment
 
