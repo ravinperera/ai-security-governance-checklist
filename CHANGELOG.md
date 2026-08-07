@@ -6,6 +6,7 @@ All notable repository changes are recorded here. This project uses date-based e
 
 ### Added
 
+- Repository-specific threat model covering assets, threat actors, trust boundaries, mitigations, residual risk, and review triggers.
 - Contribution guidance for checklist controls, framework mappings, templates, validation, and release notes.
 - Structured issue templates for checklist improvements and framework mapping requests.
 
