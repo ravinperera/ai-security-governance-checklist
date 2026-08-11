@@ -71,6 +71,10 @@ class RepositoryValidationTests(unittest.TestCase):
         self.assertTrue(any("trailing whitespace" in error for error in errors))
         self.assertTrue(any("missing final newline" in error for error in errors))
 
+    def test_nul_bytes_fail_text_validation(self) -> None:
+        errors = self.run_validation({"README.md": "# Example\x00\n"})
+        self.assertTrue(any("contains a NUL byte" in error for error in errors))
+
 
 if __name__ == "__main__":
     unittest.main()

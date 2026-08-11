@@ -38,8 +38,12 @@ def repository_files(root: Path) -> list[Path]:
 
 def check_text_file(path: Path, root: Path) -> list[str]:
     relative = path.relative_to(root)
+    raw = path.read_bytes()
+    if b"\0" in raw:
+        return [f"{relative}: contains a NUL byte"]
+
     try:
-        text = path.read_text(encoding="utf-8")
+        text = raw.decode("utf-8")
     except UnicodeDecodeError as exc:
         return [f"{relative}: invalid UTF-8 ({exc})"]
 
