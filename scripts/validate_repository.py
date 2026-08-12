@@ -101,6 +101,42 @@ def check_csv(path: Path, root: Path) -> list[str]:
     return errors
 
 
+def csv_header(path: Path) -> list[str]:
+    with path.open(newline="", encoding="utf-8") as handle:
+        return next(csv.reader(handle), [])
+
+
+def check_example_template_schemas(root: Path) -> list[str]:
+    """Keep completed CSV examples aligned with their matching templates."""
+    examples_dir = root / "examples"
+    templates_dir = root / "templates"
+    if not examples_dir.exists() or not templates_dir.exists():
+        return []
+
+    errors: list[str] = []
+    for example in sorted(examples_dir.glob("example-*.csv")):
+        template = templates_dir / example.name.removeprefix("example-")
+        if not template.exists():
+            continue
+
+        try:
+            example_header = csv_header(example)
+            template_header = csv_header(template)
+        except (csv.Error, UnicodeDecodeError) as exc:
+            errors.append(
+                f"{example.relative_to(root)}: cannot compare schema ({exc})"
+            )
+            continue
+
+        if example_header != template_header:
+            errors.append(
+                f"{example.relative_to(root)}: header does not match "
+                f"{template.relative_to(root)}"
+            )
+
+    return errors
+
+
 def markdown_targets(text: str) -> Iterable[tuple[int, str]]:
     in_fence = False
     for number, line in enumerate(text.splitlines(), start=1):
@@ -172,6 +208,7 @@ def validate(root: Path) -> list[str]:
         if path.suffix.casefold() == ".md":
             errors.extend(check_markdown_links(path, root))
 
+    errors.extend(check_example_template_schemas(root))
     return errors
 
 

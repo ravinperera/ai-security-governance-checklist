@@ -45,6 +45,28 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertTrue(any("expected 2 column" in error for error in errors))
 
+    def test_matching_example_schema_passes(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/register.csv": "Control ID,Owner\nAI-01,Security\n",
+                "examples/example-register.csv": (
+                    "Control ID,Owner\nAI-02,Platform\n"
+                ),
+            }
+        )
+        self.assertEqual(errors, [])
+
+    def test_mismatched_example_schema_fails(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/register.csv": "Control ID,Owner\nAI-01,Security\n",
+                "examples/example-register.csv": (
+                    "Control ID,Status\nAI-02,Open\n"
+                ),
+            }
+        )
+        self.assertTrue(any("header does not match" in error for error in errors))
+
     def test_missing_local_markdown_link_fails(self) -> None:
         errors = self.run_validation(
             {"README.md": "# Example\n\nSee [missing](docs/missing.md).\n"}
