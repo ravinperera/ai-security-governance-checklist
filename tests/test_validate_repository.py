@@ -39,6 +39,12 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertTrue(any("duplicate header" in error for error in errors))
 
+    def test_blank_csv_header_fails(self) -> None:
+        errors = self.run_validation(
+            {"templates/register.csv": "Control ID,,Owner\nAI-01,Open,Security\n"}
+        )
+        self.assertTrue(any("blank header column" in error for error in errors))
+
     def test_uneven_csv_rows_fail(self) -> None:
         errors = self.run_validation(
             {"templates/register.csv": "Control ID,Owner\nAI-01\n"}
@@ -74,6 +80,25 @@ class RepositoryValidationTests(unittest.TestCase):
         self.assertTrue(
             any("missing local link target" in error for error in errors)
         )
+
+    def test_repository_escape_markdown_link_fails(self) -> None:
+        errors = self.run_validation(
+            {"README.md": "# Example\n\nSee [outside](../outside.md).\n"}
+        )
+        self.assertTrue(
+            any("local link escapes repository" in error for error in errors)
+        )
+
+    def test_local_link_with_fragment_and_query_passes(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    "# Example\n\nSee [guide](docs/guide.md?view=1#section).\n"
+                ),
+                "docs/guide.md": "# Guide\n",
+            }
+        )
+        self.assertEqual(errors, [])
 
     def test_links_inside_code_fences_are_ignored(self) -> None:
         errors = self.run_validation(
