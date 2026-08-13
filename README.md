@@ -54,6 +54,7 @@ This repository focuses on practical questions:
 │   └── example-ai-system-inventory.csv
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
+├── SUPPORT.md
 └── README.md
 ```
 
@@ -100,7 +101,7 @@ The validator checks tracked Markdown, CSV, JSON, and YAML files for UTF-8 text 
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the preferred workflow, checklist wording guidance, framework mapping expectations, validation commands, and safety rules for examples and templates. Notable changes are recorded in [CHANGELOG.md](CHANGELOG.md).
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the preferred workflow, checklist wording guidance, framework mapping expectations, validation commands, and safety rules for examples and templates. See [SUPPORT.md](SUPPORT.md) for maintenance, stability, versioning, and adoption expectations. Notable changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 
 ## Who This Is For
 
