@@ -45,6 +45,21 @@ Use this checklist when building or approving applications that use large langua
 - [ ] Rate limits and budget controls are configured.
 - [ ] Audit logs capture tool calls and outcomes.
 
+## Multi-Agent Workflows
+
+- [ ] Each agent has a documented role, permitted tools, data boundary, and action scope.
+- [ ] Generation, independent validation, and approval are separated where the workflow's risk warrants it.
+- [ ] An agent cannot increase its own authority by delegating or handing work to another agent.
+- [ ] Downstream agents independently enforce authorization instead of trusting permission claims in an upstream prompt or handoff.
+- [ ] Agent-to-agent handoffs use a defined schema or validated fields for task identity, recipient, state reference, and requested action where practical.
+- [ ] Handoffs point to pinned or otherwise unambiguous source state for high-impact work, such as a commit SHA, immutable artifact, or versioned record.
+- [ ] Untrusted model output, retrieved content, or external messages cannot silently become higher-priority instructions for another agent.
+- [ ] Durable audit evidence records material handoffs, tool actions, approvals, failures, and outcomes without storing unnecessary sensitive prompt content.
+- [ ] Conflicting instructions, ambiguous ownership, inconsistent workflow state, or missing approvals cause the workflow to stop or escalate rather than guess.
+- [ ] Retry and delegation limits prevent loops, uncontrolled fan-out, cost exhaustion, and repeated high-impact actions.
+- [ ] Human escalation is defined for privileged, destructive, externally consequential, or otherwise high-impact decisions.
+- [ ] Tests cover attempts to bypass role boundaries, propagate excessive permissions, forge handoff state, or induce unsafe cross-agent actions.
+
 ## Supply Chain
 
 - [ ] Model provider is approved.
