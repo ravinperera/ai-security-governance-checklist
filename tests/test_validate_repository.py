@@ -90,6 +90,26 @@ class RepositoryValidationTests(unittest.TestCase):
             any("missing local link target" in error for error in errors)
         )
 
+    def test_missing_local_markdown_image_fails(self) -> None:
+        errors = self.run_validation(
+            {"README.md": "# Example\n\n![diagram](docs/missing.png)\n"}
+        )
+        self.assertTrue(
+            any("missing local link target" in error for error in errors)
+        )
+
+    def test_external_markdown_images_are_ignored(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    "# Example\n\n"
+                    "![remote](https://example.com/image.png)\n"
+                    "![](data:image/png;base64,AAAA)\n"
+                )
+            }
+        )
+        self.assertEqual(errors, [])
+
     def test_repository_escape_markdown_link_fails(self) -> None:
         errors = self.run_validation(
             {"README.md": "# Example\n\nSee [outside](../outside.md).\n"}

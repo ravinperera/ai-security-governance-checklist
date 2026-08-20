@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Iterable
 
 TEXT_SUFFIXES = {".md", ".csv", ".json", ".yml", ".yaml"}
-LINK_PATTERN = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
+LINK_PATTERN = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 
 
 def repository_files(root: Path) -> list[Path]:
