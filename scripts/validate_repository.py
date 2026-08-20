@@ -200,10 +200,7 @@ def validate(root: Path) -> list[str]:
         if not path.exists() or path.suffix.casefold() not in TEXT_SUFFIXES:
             continue
         errors.extend(check_text_file(path, root))
-        if (
-            path.suffix.casefold() == ".csv"
-            and "templates" in path.relative_to(root).parts
-        ):
+        if path.suffix.casefold() == ".csv":
             errors.extend(check_csv(path, root))
         if path.suffix.casefold() == ".md":
             errors.extend(check_markdown_links(path, root))

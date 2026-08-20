@@ -51,6 +51,15 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertTrue(any("expected 2 column" in error for error in errors))
 
+    def test_uneven_example_csv_rows_fail(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/register.csv": "Control ID,Owner\nAI-01,Security\n",
+                "examples/example-register.csv": "Control ID,Owner\nAI-02\n",
+            }
+        )
+        self.assertTrue(any("expected 2 column" in error for error in errors))
+
     def test_matching_example_schema_passes(self) -> None:
         errors = self.run_validation(
             {
