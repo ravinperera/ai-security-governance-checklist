@@ -31,6 +31,7 @@ This repository focuses on practical questions:
 │   ├── role-based-checklists.md
 │   ├── ai-data-handling-decision-guide.md
 │   ├── llm-application-security-checklist.md
+│   ├── agent-memory-governance-checklist.md
 │   ├── enterprise-ai-usage-policy.md
 │   ├── ai-vendor-assessment.md
 │   ├── shadow-ai-risk-checklist.md
@@ -73,6 +74,8 @@ Start with a small, named group of systems rather than trying to complete every 
 The completed registers are fictional examples only. They demonstrate record quality and do not recommend any named tool, provider, risk rating, approval decision, or control set for a real organisation.
 
 Use the [role-based AI governance checklists](checklists/role-based-checklists.md) to give engineering, security, compliance, procurement and leadership a short view of their responsibilities, evidence and handoffs without creating separate control frameworks.
+
+If an agent or RAG system persists conversation memory, summaries, checkpoints, embeddings, retrieval caches, or structural code indexes, use the [Agent Memory And Code Index Governance Checklist](checklists/agent-memory-governance-checklist.md) to review isolation, query-time authorization, provenance, freshness, retention, deletion, and incident handling.
 
 ### Suggested One-Week Rollout
 

@@ -78,6 +78,17 @@ Use this checklist when building or approving applications that use large langua
 - [ ] Embedding stores are backed up and protected.
 - [ ] Index deletion and retention are documented.
 
+## Persistent Agent Memory And Code Indexes
+
+- [ ] Persistent memory, summaries, retrieval caches, embeddings, structural code indexes, and checkpoints are inventoried where used.
+- [ ] Retrieval permissions are enforced at query time, not inherited indefinitely from the original indexing event.
+- [ ] Tenant, repository, project, and environment boundaries are enforced in both storage and retrieval.
+- [ ] Stored knowledge has enough provenance and revision information to detect stale or superseded state when correctness depends on freshness.
+- [ ] Retention, invalidation, deletion, backup, and incident-response requirements include derived memory and indexes.
+- [ ] Remembered instructions cannot override current authorization, policy, or human approval requirements.
+
+Use the [Agent Memory And Code Index Governance Checklist](agent-memory-governance-checklist.md) for the full lifecycle review.
+
 ## Testing
 
 - [ ] Prompt injection tests are performed.
