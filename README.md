@@ -32,6 +32,7 @@ This repository focuses on practical questions:
 │   ├── ai-data-handling-decision-guide.md
 │   ├── llm-application-security-checklist.md
 │   ├── agent-memory-governance-checklist.md
+│   ├── agent-contract-orchestration-gates.md
 │   ├── eu-ai-act-article-50-transparency.md
 │   ├── enterprise-ai-usage-policy.md
 │   ├── ai-vendor-assessment.md
@@ -78,6 +79,8 @@ The completed registers are fictional examples only. They demonstrate record qua
 Use the [role-based AI governance checklists](checklists/role-based-checklists.md) to give engineering, security, compliance, procurement and leadership a short view of their responsibilities, evidence and handoffs without creating separate control frameworks.
 
 If an agent or RAG system persists conversation memory, summaries, checkpoints, embeddings, retrieval caches, or structural code indexes, use the [Agent Memory And Code Index Governance Checklist](checklists/agent-memory-governance-checklist.md) to review isolation, query-time authorization, provenance, freshness, retention, deletion, and incident handling.
+
+If an agent can choose tools, delegate to specialists, advance through workflow stages, or execute external actions, use the [Agent Contract And Orchestration Gate Governance Checklist](checklists/agent-contract-orchestration-gates.md) to define authority, stage gates, independent approval, checkpoints, retry/idempotency controls, and evidence.
 
 For EU-facing systems and content use cases, use the [EU AI Act Article 50 Transparency Readiness Checklist](checklists/eu-ai-act-article-50-transparency.md) with the [AI transparency evidence register](templates/ai-transparency-evidence-register.csv). Article 50 applicability is fact-specific, so treat the checklist as engineering/governance support rather than legal advice and obtain jurisdiction-specific review.
 
