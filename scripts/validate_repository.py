@@ -13,6 +13,28 @@ from typing import Iterable
 
 TEXT_SUFFIXES = {".md", ".csv", ".json", ".yml", ".yaml"}
 LINK_PATTERN = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+SECRET_PATTERNS = (
+    (
+        "AWS access key ID",
+        re.compile(r"\b(?:AKIA|ASIA)[A-Z0-9]{16}\b"),
+    ),
+    (
+        "GitHub classic personal access token",
+        re.compile(r"\bghp_[A-Za-z0-9]{36}\b"),
+    ),
+    (
+        "GitHub fine-grained personal access token",
+        re.compile(r"\bgithub_pat_[A-Za-z0-9_]{40,}\b"),
+    ),
+    (
+        "OpenAI-style API key",
+        re.compile(r"\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b"),
+    ),
+    (
+        "PEM private key header",
+        re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
+    ),
+)
 
 
 def repository_files(root: Path) -> list[Path]:
@@ -55,6 +77,24 @@ def check_text_file(path: Path, root: Path) -> list[str]:
         if line.rstrip(" \t") != line:
             errors.append(f"{relative}:{number}: trailing whitespace")
 
+    return errors
+
+
+def check_secret_patterns(path: Path, root: Path) -> list[str]:
+    """Flag only narrow, high-confidence credential shapes in tracked text."""
+    relative = path.relative_to(root)
+    try:
+        text = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return []
+
+    errors: list[str] = []
+    for number, line in enumerate(text.splitlines(), start=1):
+        for label, pattern in SECRET_PATTERNS:
+            if pattern.search(line):
+                errors.append(
+                    f"{relative}:{number}: possible unredacted {label}"
+                )
     return errors
 
 
@@ -200,6 +240,7 @@ def validate(root: Path) -> list[str]:
         if not path.exists() or path.suffix.casefold() not in TEXT_SUFFIXES:
             continue
         errors.extend(check_text_file(path, root))
+        errors.extend(check_secret_patterns(path, root))
         if path.suffix.casefold() == ".csv":
             errors.extend(check_csv(path, root))
         if path.suffix.casefold() == ".md":
