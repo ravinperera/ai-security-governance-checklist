@@ -110,6 +110,44 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
+    def test_high_confidence_secret_shape_fails(self) -> None:
+        errors = self.run_validation(
+            {
+                "examples/example-config.yml": (
+                    "access_key_id: AKIA1234567890ABCDEF\n"
+                )
+            }
+        )
+        self.assertTrue(
+            any("possible unredacted AWS access key ID" in error for error in errors)
+        )
+
+    def test_private_key_header_fails(self) -> None:
+        errors = self.run_validation(
+            {
+                "docs/example.md": (
+                    "# Unsafe example\n\n-----BEGIN PRIVATE KEY-----\n"
+                )
+            }
+        )
+        self.assertTrue(
+            any("possible unredacted PEM private key header" in error for error in errors)
+        )
+
+    def test_redacted_secret_placeholders_pass(self) -> None:
+        errors = self.run_validation(
+            {
+                "docs/example.md": (
+                    "# Safe placeholders\n\n"
+                    "- AWS: `AKIA...REDACTED`\n"
+                    "- GitHub: `ghp_<redacted>`\n"
+                    "- OpenAI: `sk-<redacted>`\n"
+                    "- Private key: `<redacted private key>`\n"
+                )
+            }
+        )
+        self.assertEqual(errors, [])
+
     def test_repository_escape_markdown_link_fails(self) -> None:
         errors = self.run_validation(
             {"README.md": "# Example\n\nSee [outside](../outside.md).\n"}
