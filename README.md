@@ -40,6 +40,7 @@ This repository focuses on practical questions:
 │   ├── ai-incident-response-playbook.md
 │   └── ai-system-periodic-review-checklist.md
 ├── docs/
+│   ├── architecture-data-flow.md
 │   └── threat-model.md
 ├── mappings/
 │   ├── owasp-llm-top-10-mapping.md
@@ -131,6 +132,12 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the prefer
 - Review AI outputs before using them in production, legal, customer, financial, or security-sensitive contexts.
 - Monitor for shadow AI usage and data leakage.
 - Require vendor due diligence before approving AI tools.
+
+## Architecture and Data Flows
+
+The [AI governance architecture and data-flow reference](docs/architecture-data-flow.md) shows where the repository's controls sit across users, applications, models, retrieval, tools/agents, durable memory, and audit evidence. It includes trust boundaries, control mappings, a minimum data-flow record, and explicit stop conditions for sensitive-data egress, unauthorized retrieval, tool execution, memory persistence, and missing audit evidence.
+
+Use it as a starting point for a system-specific diagram and data-flow record; it is deliberately vendor-neutral and does not replace the threat model for a deployed system.
 
 ## Repository Threat Model
 
