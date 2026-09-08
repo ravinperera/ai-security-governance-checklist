@@ -93,6 +93,39 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
+    def test_malformed_governance_date_fails(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/ai-risk-register.csv": (
+                    "Risk ID,Due Date\nAI-RISK-001,2026-02-30\n"
+                )
+            }
+        )
+        self.assertTrue(any("Due Date must use YYYY-MM-DD" in error for error in errors))
+
+    def test_non_iso_governance_date_fails(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/ai-system-inventory.csv": (
+                    "System Name,Review Date\nSupport Bot,08/09/2026\n"
+                )
+            }
+        )
+        self.assertTrue(any("Review Date must use YYYY-MM-DD" in error for error in errors))
+
+    def test_valid_and_blank_governance_dates_pass(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/approved-ai-tools-register.csv": (
+                    "Tool Name,Review Date\nTool A,2026-12-17\nTool B,\n"
+                ),
+                "templates/register.csv": (
+                    "Exception expiry,Owner\n2027-01-31,Risk\n,Security\n"
+                ),
+            }
+        )
+        self.assertEqual(errors, [])
+
     def test_matching_example_schema_passes(self) -> None:
         errors = self.run_validation(
             {
