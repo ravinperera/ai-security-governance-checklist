@@ -13,6 +13,12 @@ from typing import Iterable
 
 TEXT_SUFFIXES = {".md", ".csv", ".json", ".yml", ".yaml"}
 LINK_PATTERN = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+REGISTER_UNIQUE_KEYS = {
+    "ai-control-ownership-matrix.csv": "Control ID",
+    "ai-risk-register.csv": "Risk ID",
+    "ai-system-inventory.csv": "System Name",
+    "approved-ai-tools-register.csv": "Tool Name",
+}
 SECRET_PATTERNS = (
     (
         "AWS access key ID",
@@ -98,6 +104,11 @@ def check_secret_patterns(path: Path, root: Path) -> list[str]:
     return errors
 
 
+def register_unique_key(path: Path) -> str | None:
+    name = path.name.removeprefix("example-")
+    return REGISTER_UNIQUE_KEYS.get(name)
+
+
 def check_csv(path: Path, root: Path) -> list[str]:
     relative = path.relative_to(root)
     try:
@@ -137,6 +148,25 @@ def check_csv(path: Path, root: Path) -> list[str]:
             errors.append(
                 f"{relative}:{number}: expected {expected} column(s), found {len(row)}"
             )
+
+    unique_key = register_unique_key(path)
+    if unique_key and unique_key in header:
+        key_index = header.index(unique_key)
+        seen: dict[str, int] = {}
+        for number, row in enumerate(rows[1:], start=2):
+            if len(row) <= key_index:
+                continue
+            value = row[key_index].strip()
+            if not value:
+                continue
+            normalized_value = value.casefold()
+            if normalized_value in seen:
+                errors.append(
+                    f"{relative}:{number}: duplicate {unique_key} "
+                    f"(first seen on row {seen[normalized_value]})"
+                )
+            else:
+                seen[normalized_value] = number
 
     return errors
 
