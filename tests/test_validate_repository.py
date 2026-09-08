@@ -60,6 +60,39 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertTrue(any("expected 2 column" in error for error in errors))
 
+    def test_duplicate_risk_ids_fail(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/ai-risk-register.csv": (
+                    "Risk ID,Owner\nAI-RISK-001,Security\nAI-RISK-001,Platform\n"
+                )
+            }
+        )
+        self.assertTrue(any("duplicate Risk ID" in error for error in errors))
+
+    def test_duplicate_system_names_are_case_insensitive(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/ai-system-inventory.csv": (
+                    "System Name,Owner\nSupport Bot,Platform\nsupport bot,Security\n"
+                )
+            }
+        )
+        self.assertTrue(any("duplicate System Name" in error for error in errors))
+
+    def test_unique_register_identifiers_pass(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/approved-ai-tools-register.csv": (
+                    "Tool Name,Owner\nTool A,Security\nTool B,Platform\n"
+                ),
+                "examples/example-ai-control-ownership-matrix.csv": (
+                    "Control ID,Owner\nAI-GOV-001,Security\nAI-GOV-002,Platform\n"
+                ),
+            }
+        )
+        self.assertEqual(errors, [])
+
     def test_matching_example_schema_passes(self) -> None:
         errors = self.run_validation(
             {
