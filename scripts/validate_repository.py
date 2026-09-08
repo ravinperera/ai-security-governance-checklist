@@ -8,11 +8,13 @@ import csv
 import re
 import subprocess
 import urllib.parse
+from datetime import date
 from pathlib import Path
 from typing import Iterable
 
 TEXT_SUFFIXES = {".md", ".csv", ".json", ".yml", ".yaml"}
 LINK_PATTERN = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+ISO_DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 REGISTER_UNIQUE_KEYS = {
     "ai-control-ownership-matrix.csv": "Control ID",
     "ai-risk-register.csv": "Risk ID",
@@ -109,6 +111,15 @@ def register_unique_key(path: Path) -> str | None:
     return REGISTER_UNIQUE_KEYS.get(name)
 
 
+def is_date_header(value: str) -> bool:
+    normalized = value.strip().casefold()
+    return (
+        normalized == "date"
+        or normalized.endswith(" date")
+        or normalized.endswith(" expiry")
+    )
+
+
 def check_csv(path: Path, root: Path) -> list[str]:
     relative = path.relative_to(root)
     try:
@@ -167,6 +178,29 @@ def check_csv(path: Path, root: Path) -> list[str]:
                 )
             else:
                 seen[normalized_value] = number
+
+    date_columns = [
+        (index, name.strip())
+        for index, name in enumerate(header)
+        if is_date_header(name)
+    ]
+    for number, row in enumerate(rows[1:], start=2):
+        for index, name in date_columns:
+            if len(row) <= index:
+                continue
+            value = row[index].strip()
+            if not value:
+                continue
+            try:
+                valid = bool(ISO_DATE_PATTERN.fullmatch(value))
+                if valid:
+                    date.fromisoformat(value)
+            except ValueError:
+                valid = False
+            if not valid:
+                errors.append(
+                    f"{relative}:{number}: {name} must use YYYY-MM-DD"
+                )
 
     return errors
 
