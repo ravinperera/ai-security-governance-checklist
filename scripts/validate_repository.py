@@ -165,10 +165,13 @@ def check_csv(path: Path, root: Path) -> list[str]:
         key_index = header.index(unique_key)
         seen: dict[str, int] = {}
         for number, row in enumerate(rows[1:], start=2):
+            if not row or all(not value.strip() for value in row):
+                continue
             if len(row) <= key_index:
                 continue
             value = row[key_index].strip()
             if not value:
+                errors.append(f"{relative}:{number}: {unique_key} must not be blank")
                 continue
             normalized_value = value.casefold()
             if normalized_value in seen:
