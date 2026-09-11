@@ -93,6 +93,26 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
+    def test_populated_register_row_with_blank_identifier_fails(self) -> None:
+        errors = self.run_validation(
+            {
+                "examples/example-ai-control-ownership-matrix.csv": (
+                    "Control ID,Owner\n,Security\n"
+                )
+            }
+        )
+        self.assertTrue(any("Control ID must not be blank" in error for error in errors))
+
+    def test_completely_blank_register_rows_are_ignored(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/approved-ai-tools-register.csv": (
+                    "Tool Name,Owner\nTool A,Security\n,\nTool B,Platform\n"
+                )
+            }
+        )
+        self.assertEqual(errors, [])
+
     def test_malformed_governance_date_fails(self) -> None:
         errors = self.run_validation(
             {
