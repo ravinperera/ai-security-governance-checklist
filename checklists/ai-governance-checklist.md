@@ -53,6 +53,7 @@ Use this baseline before approving or expanding AI use inside an organisation. I
 
 - [ ] Agents that can select tools, delegate work, advance workflow stages, or take external actions have explicit authority boundaries, success gates, and approval rules using the [Agent Contract And Orchestration Gate Governance Checklist](agent-contract-orchestration-gates.md).
 - [ ] Persistent conversation memory, summaries, checkpoints, embeddings, retrieval caches, or code indexes are reviewed using the [Agent Memory And Code Index Governance Checklist](agent-memory-governance-checklist.md).
+- [ ] Reusable agent skills, procedural plugins, or specialist instruction packs are reviewed using the [Agent Skill And Procedural Plugin Governance Checklist](agent-skill-governance-checklist.md) before they are trusted to install dependencies, access external services, or influence high-impact workflows.
 - [ ] Retrieval and tool authorization is evaluated at the time of access or action, not assumed from what the agent previously knew.
 - [ ] High-impact autonomous actions fail closed when required approval, evidence, or policy checks are missing.
 
@@ -101,6 +102,7 @@ Use the specialist document when the trigger applies:
 | Internal LLM, RAG, or agent application | [LLM Application Security Checklist](llm-application-security-checklist.md) |
 | Agent chooses tools, delegates, advances stages, or executes external actions | [Agent Contract And Orchestration Gate Governance Checklist](agent-contract-orchestration-gates.md) |
 | Persistent memory, embeddings, retrieval caches, checkpoints, or code indexes | [Agent Memory And Code Index Governance Checklist](agent-memory-governance-checklist.md) |
+| Reusable agent skill, procedural plugin, or specialist instruction pack | [Agent Skill And Procedural Plugin Governance Checklist](agent-skill-governance-checklist.md) |
 | External AI provider or material vendor change | [AI Vendor Assessment](ai-vendor-assessment.md) |
 | EU-facing interaction or generated/manipulated content where Article 50 may apply | [EU AI Act Article 50 Transparency Readiness Checklist](eu-ai-act-article-50-transparency.md) |
 | Suspected AI security, privacy, safety, or policy incident | [AI Incident Response Playbook](ai-incident-response-playbook.md) |
