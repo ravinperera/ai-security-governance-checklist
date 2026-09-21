@@ -73,6 +73,8 @@ Do not allow a free-form model response to skip required stages or gates merely 
 - [ ] Rollback/compensation is defined where a reversible external action can fail part-way through a workflow.
 - [ ] Destructive or irreversible actions have stronger confirmation and authorization controls than ordinary writes.
 
+When orchestration can dynamically choose a model/provider route or fall back because of price, quota, cache, latency, or availability, also use the [Model Routing And Fallback Governance Checklist](model-routing-fallback-governance.md). Routing optimisation must stay inside the agent's approved data, provider, tenancy, region, retention, capability, and verification boundaries.
+
 ## Checkpoints And Resumability
 
 - [ ] A checkpoint records the workflow/stage identifier, objective, current state, completed artifacts, next permitted action, and unresolved blockers.
