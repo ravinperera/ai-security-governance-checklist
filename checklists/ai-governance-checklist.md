@@ -89,6 +89,7 @@ Use this baseline before approving or expanding AI use inside an organisation. I
 - [ ] Material model, provider, data-flow, tool, memory, autonomy, policy, or regulatory changes trigger reassessment rather than waiting for the next scheduled review.
 - [ ] Shadow AI usage is reviewed.
 - [ ] Logs are monitored where available.
+- [ ] AI usage, token, routing, cache, retry, or cost telemetry that identifies users/projects or could capture prompt/source content is governed using the [AI Usage, Token, And Cost Telemetry Governance Checklist](ai-usage-telemetry-governance.md).
 - [ ] Suspected AI security, privacy, safety, or governance incidents follow the [AI Incident Response Playbook](ai-incident-response-playbook.md).
 - [ ] Scheduled and event-driven reassessments use the [AI System Periodic Review Checklist](ai-system-periodic-review-checklist.md).
 - [ ] Lessons learned are added to policy, controls, and training.
@@ -103,6 +104,7 @@ Use the specialist document when the trigger applies:
 | Agent chooses tools, delegates, advances stages, or executes external actions | [Agent Contract And Orchestration Gate Governance Checklist](agent-contract-orchestration-gates.md) |
 | Persistent memory, embeddings, retrieval caches, checkpoints, or code indexes | [Agent Memory And Code Index Governance Checklist](agent-memory-governance-checklist.md) |
 | Reusable agent skill, procedural plugin, or specialist instruction pack | [Agent Skill And Procedural Plugin Governance Checklist](agent-skill-governance-checklist.md) |
+| AI usage, token, routing, cache, retry, cost, or productivity telemetry | [AI Usage, Token, And Cost Telemetry Governance Checklist](ai-usage-telemetry-governance.md) |
 | External AI provider or material vendor change | [AI Vendor Assessment](ai-vendor-assessment.md) |
 | EU-facing interaction or generated/manipulated content where Article 50 may apply | [EU AI Act Article 50 Transparency Readiness Checklist](eu-ai-act-article-50-transparency.md) |
 | Suspected AI security, privacy, safety, or policy incident | [AI Incident Response Playbook](ai-incident-response-playbook.md) |
