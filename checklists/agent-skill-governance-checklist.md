@@ -30,6 +30,21 @@ These resources can improve consistency and reduce repeated prompting, but they 
 - [ ] Skill updates are reviewed before rollout when they can materially change agent behaviour or authority.
 - [ ] Removing a skill also removes or accounts for its cached artifacts, credentials, downloaded models, and persistent configuration where applicable.
 
+## Rendered Installs And Drift Reconciliation
+
+Use these controls when one canonical agent/skill definition is rendered, converted, copied, or synchronised into tool-specific formats or destinations.
+
+- [ ] The canonical source is distinguishable from generated or installed tool-specific copies.
+- [ ] The transformation is deterministic or otherwise reproducible, and the renderer/converter version or revision is recorded when it can change output.
+- [ ] Material installations record enough provenance to reconstruct what was written, such as canonical source version/hash, rendered hash, target tool, destination, scope, and relevant provider-specific overrides.
+- [ ] Provider-specific overrides are explicit deltas from the canonical definition rather than silent forks of the whole instruction set.
+- [ ] Reconciliation can distinguish at least current, source-outdated, locally modified, missing/removed, and unmanaged/foreign states when those distinctions affect update or removal safety.
+- [ ] A locally modified installed file is reviewed or backed up before an automated update, overwrite, reset, or deletion.
+- [ ] Sync or conversion conflicts fail visibly; the system does not silently choose one provider copy as authoritative when multiple copies changed independently.
+- [ ] Tool-specific rendering does not add permissions, network access, tools, or data access that were absent from the approved canonical source unless separately reviewed and authorised.
+- [ ] Compatibility claims are tied to the tool/host versions actually tested; successful rendering alone is not treated as proof that a client will discover, prioritise, or obey the installed instructions.
+- [ ] Removing or disabling the canonical skill also identifies stale rendered copies that may remain active in other tools or scopes.
+
 ## Permissions And External Actions
 
 - [ ] Loading or discovering a skill does not itself grant new permissions.
@@ -75,7 +90,7 @@ These resources can improve consistency and reduce repeated prompting, but they 
 
 - [ ] Approved skills are included in periodic AI system or tool reviews where they can materially affect behaviour.
 - [ ] Security advisories, repository compromise, publisher changes, or dependency vulnerabilities can trigger review or suspension.
-- [ ] Material skill installation, update, and revocation events are auditable where risk warrants it.
+- [ ] Material skill installation, update, reconciliation, and revocation events are auditable where risk warrants it.
 - [ ] Incident response can disable a skill, revoke credentials, remove cached artifacts, and identify affected workflows.
 - [ ] Previously generated outputs are reassessed when a compromised or materially faulty skill may have influenced them.
 
@@ -88,10 +103,17 @@ Keep evidence proportionate to risk, such as:
 - dependency and external-service inventory;
 - security or code review evidence;
 - data-classification and egress decisions;
-- installation/update/revocation records;
+- installation/update/reconciliation/revocation records;
+- canonical and rendered hashes plus tool/scope/destination when cross-tool rendering is used;
 - reproducibility records for material analyses;
 - human-review and approval evidence for high-stakes use.
 
-## Upstream Pattern Reference
+## Upstream Pattern References
 
-[K-Dense Scientific Agent Skills](https://github.com/K-Dense-AI/scientific-agent-skills) is one example of a large portable skill library with explicit specialist tooling, dependency guidance, reproducibility concerns, and security warnings around installing only needed skills. Those patterns helped inform this vendor-neutral checklist. This repository does not copy its skill content or treat its adoption, compatibility, or performance claims as independently verified facts.
+These public projects illustrate patterns that informed the vendor-neutral controls above. They are design references, not dependencies or proof of compliance:
+
+- [K-Dense Scientific Agent Skills](https://github.com/K-Dense-AI/scientific-agent-skills) demonstrates a large portable skill library with specialist tooling, dependency guidance, reproducibility concerns, and security warnings around installing only needed skills.
+- [graft](https://github.com/Zealbase/graft) (MIT; reviewed 2026-09-24) demonstrates canonical agent definitions, provider-specific rendering/synchronisation, and explicit drift/conflict detection.
+- [Agency Agents](https://github.com/msitarzewski/agency-agents-app) (MIT; reviewed 2026-09-24) demonstrates deterministic tool-specific renders, an install ledger with source/render identity, reconciliation states, and backup-before-overwrite behaviour for modified installs.
+
+This checklist does not copy their code, skill content, prompts, or implementation-specific schemas, and it does not treat adoption, compatibility, or performance claims as independently verified facts.
