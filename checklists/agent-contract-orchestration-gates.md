@@ -75,6 +75,18 @@ Do not allow a free-form model response to skip required stages or gates merely 
 
 When orchestration can dynamically choose a model/provider route or fall back because of price, quota, cache, latency, or availability, also use the [Model Routing And Fallback Governance Checklist](model-routing-fallback-governance.md). Routing optimisation must stay inside the agent's approved data, provider, tenancy, region, retention, capability, and verification boundaries.
 
+## Terminal And Remote Session Control
+
+Apply these controls when a runtime can inspect terminals, submit prompts, send keys, launch processes, or control agents on another machine. Terminal organization and process persistence are not security isolation.
+
+- [ ] Permissions distinguish observing output from submitting prompts, sending raw input, starting agents, closing panes and stopping servers. Sending text plus Enter can execute a shell command or answer an approval dialog; it is not merely communication.
+- [ ] Every action binds an approved machine/session, the discovered pane or agent, its current occupant, and the intended repository/environment. UI focus, sidebar position, a reused label, or an inherited environment flag alone does not establish authorization.
+- [ ] Target identity and authorization are rechecked after moves, reconnects, process replacement or session restore. A failed remote selection never silently redirects the action to a local or different target.
+- [ ] Agent-aware submission is preferred to raw keystrokes when available. Blocked approval/question interfaces require inspection and the appropriate authorized response; a controller must not auto-accept them to keep work flowing.
+- [ ] Runtime activity/readiness labels are distinguished from validation results and approval records. Unknown state, timeout, submission acknowledgment, or an old terminal success message cannot satisfy a workflow gate.
+- [ ] Control endpoints and forwarded connections have a documented access boundary. Shared users, sockets, credentials or worktrees are assessed explicitly; separate panes do not independently enforce least privilege or reviewer independence.
+- [ ] Observation and terminal input are recorded proportionately: action class, target identity, task, authority and outcome, without indiscriminately logging prompts, secrets or complete terminal history.
+
 ## Checkpoints And Resumability
 
 - [ ] A checkpoint records the workflow/stage identifier, objective, current state, completed artifacts, next permitted action, and unresolved blockers.
@@ -84,6 +96,9 @@ When orchestration can dynamically choose a model/provider route or fall back be
 - [ ] Resume logic revalidates time-sensitive authorization, source state, policy, and external-resource state before continuing.
 - [ ] A resumed workflow cannot replay a completed side effect merely because the previous conversation is unavailable.
 - [ ] Corrupted, partial, or unverified checkpoints fail safely.
+- [ ] Recovery distinguishes surviving processes, restored layout/screen history and a restarted agent conversation; none is used as a substitute for authoritative task or external-action state.
+- [ ] After disconnect/restart, reconcile potentially completed actions before retrying, refresh target identities, and re-establish interrupted waits. Restored text or prior readiness cannot prove a new command completed.
+- [ ] Terminal-history capture and native-session auto-resume are assessed separately for sensitive data, retention, revocation and unattended-action risk. Restore does not renew expired approvals or justify repeating a completed side effect.
 
 For persistence, retention, tenant isolation, provenance, and deletion of checkpoints or durable state, also use the [Agent Memory And Code Index Governance Checklist](agent-memory-governance-checklist.md).
 
@@ -104,12 +119,16 @@ Retain evidence proportionate to risk, such as:
 
 ## Testing
 
+The scenarios below are governance requirements for adopting systems, not claims that this repository or Herdr implements or has passed these runtime tests.
+
 - [ ] Tests prove agents cannot invoke prohibited tools or cross defined data/environment boundaries.
 - [ ] Tests prove delegated agents do not inherit unauthorized capabilities.
 - [ ] Tests cover missing, failed, and stale validation/approval gates.
 - [ ] Tests cover duplicate/retried external actions and ambiguous remote success.
 - [ ] Tests cover resume after interruption, including stale checkpoints and changed source state.
 - [ ] Tests verify that a model's claim of success cannot bypass a failing deterministic control.
+- [ ] Tests cover two machines with the same pane label, occupant replacement, focus changes and reconnects, proving that observations and input remain bound to the intended authorized target.
+- [ ] Tests cover stale success output, submission without observed work, blocked approval dialogs and disconnect after possible delivery, proving these do not trigger false completion or blind resubmission.
 - [ ] Tabletop or simulation tests cover escalation when reviewers, approvers, tools, or authoritative evidence are unavailable.
 
 For application-level prompt injection, tool-output trust, least privilege, and secure action design, also use the [LLM Application Security Checklist](llm-application-security-checklist.md).
@@ -120,5 +139,7 @@ This checklist is vendor-neutral. Public projects demonstrate patterns worth tra
 
 - Agency Agents uses explicit specialist role definitions with missions, workflows, deliverables, and success metrics: https://github.com/msitarzewski/agency-agents
 - OpenMontage documents declarative pipeline stages, review criteria, success gates, checkpoints, and human approval in an agent-driven workflow: https://github.com/calesthio/OpenMontage
+
+- [Herdr](https://github.com/herdrdev/herdr/blob/d6b40d4edd550ccea081f089605a64314f8c8b27/skills/herdr/SKILL.md) documents agent-aware terminal control, machine-scoped identifiers, state semantics and ambiguous-delivery handling. Its [session-state guide](https://herdr.dev/docs/session-state/) distinguishes live processes from restored layouts/history and resumed conversations. Reviewed 2026-10-01; skill pinned to `d6b40d4edd550ccea081f089605a64314f8c8b27`; repository [licence](https://github.com/herdrdev/herdr/blob/d6b40d4edd550ccea081f089605a64314f8c8b27/LICENSE): Apache-2.0. The terminal/recovery controls above are original recommendations informed by these patterns, not claims that Herdr enforces every control. No code or skill content is copied.
 
 These are design references, not endorsements, dependencies, or proof that a particular implementation satisfies this checklist.
