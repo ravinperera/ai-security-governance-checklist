@@ -20,6 +20,32 @@ The objective is to make optimisation measurable without creating a broader sens
 - [ ] Free-text telemetry fields are avoided or tightly constrained because they can accidentally capture sensitive content.
 - [ ] Debug/incident modes that collect richer evidence are time-bounded, explicitly approved, and separated from normal analytics.
 
+## Separate, Versioned Collection Approval
+
+Permission to measure usage is not permission to export prompts, source code or conversations. Treat routine counters, diagnostic captures and transcript/content-sharing programmes as separate scopes. Apply the organisation's reviewed legal basis and policy; this checklist does not prescribe consent as the legal basis for every telemetry use.
+
+- [ ] Each collection programme identifies its purpose, field/content categories, recipients, processing boundary, retention and accountable owner; ordinary telemetry approval does not implicitly enable transcript sharing.
+- [ ] Optional content sharing is off by default and requires explicit programme-specific approval, plus user consent where applicable. A user opt-in cannot override organisation, project, customer or data-classification restrictions.
+- [ ] The approved scope has a version or immutable identity. The decision record identifies who approved it, when, for which scope, and any expiry or withdrawal; an agent's statement that approval exists is not sufficient evidence.
+- [ ] New content categories, recipients, purposes or retention terms trigger review and any required renewed approval before collection/export. An old generic telemetry preference cannot silently authorize the new scope.
+- [ ] Authorisation is checked before content capture and again before export, including queued, retried, offline, crash and session-end uploads; stale approval is not reused merely because the payload was queued earlier.
+- [ ] Organisation-level prohibitions and applicable opt-out controls take precedence over a local enablement setting. Upgrade, settings migration, account change or restored backup cannot silently re-enable a disabled programme.
+- [ ] Withdrawal stops future collection/export within the documented scope and cancels or quarantines queued payloads so they cannot be sent under withdrawn approval. The handling of in-flight requests is recorded rather than assumed reversible.
+- [ ] Previously retained content, exports and backups have an explicit deletion/retention decision, owner and evidence under the approved policy. Disabling a setting is not represented as proof that all historical copies disappeared; unresolved copies or permitted retention exceptions remain visible.
+- [ ] Transcript stores, raw diagnostic captures and routine analytics have separately reviewed access and retention boundaries. A shared dashboard role does not automatically grant access to raw conversations.
+- [ ] Redaction is defense in depth, not declassification: confidential code, business data and personal information can remain after credential-shaped strings are removed. Content must still satisfy its approved classification and transfer policy.
+- [ ] Approval/withdrawal and export receipts retain only the metadata needed for accountability, not duplicate raw content in an audit log. Use the existing access, retention and incident controls below.
+
+### Verification Scenarios
+
+The following are requirements for adopting systems, not tests implemented or executed by this documentation repository. Retain the tested system/version, expected decision, observed result and any gaps.
+
+- [ ] Routine metrics enabled, transcript sharing disabled: normal use, crashes and session closure do not export transcript/source content.
+- [ ] A software update introduces a new content-sharing scope: an older approval version does not enable it automatically.
+- [ ] Sharing is withdrawn while offline or while uploads are queued: reconnects and retries do not send the withdrawn content; in-flight and historical-copy handling is documented.
+- [ ] A local opt-in conflicts with organisation policy or an applicable opt-out: the more restrictive rule wins and the outcome is auditable without leaking content.
+- [ ] Sanitization removes a synthetic credential marker but leaves fictional confidential code: the remaining payload is not automatically considered safe to export.
+
 ## Identity And Workforce Monitoring
 
 - [ ] Individual-level telemetry is collected only when there is a defined operational need that cannot be met with aggregate or pseudonymous data.
@@ -124,3 +150,5 @@ Retain enough evidence to show:
 ## Pattern Note
 
 Local-first, cross-tool observability projects such as [CodeBurn](https://github.com/getagentseal/codeburn) illustrate useful attribution ideas including model/project/task breakdowns, cache-aware accounting, retry cost, routing analysis, subscription tracking, and associations between AI sessions and downstream engineering events. These controls extract vendor-neutral governance principles only; they do not copy implementation code, pricing tables, upstream savings claims, or treat event proximity as independently verified causation. CodeBurn was reviewed 2026-09-23 and is MIT-licensed.
+
+The separate, versioned collection-approval pattern is informed by [Jcode's telemetry documentation](https://github.com/1jehuang/jcode/blob/5f1c091cf7682cbce781d08444cc19ffb7ec01d8/TELEMETRY.md), inspected at `5f1c091cf7682cbce781d08444cc19ffb7ec01d8` on 2026-10-01 ([MIT licence](https://github.com/1jehuang/jcode/blob/5f1c091cf7682cbce781d08444cc19ffb7ec01d8/LICENSE)). It documents ordinary usage telemetry separately from opt-in transcript sharing with versioned consent. Queue/revocation, organisational-policy and verification controls here are local recommendations, not claims that every control is implemented or independently tested in Jcode. No source implementation, transcript content, retention default or legal-compliance claim is copied.
