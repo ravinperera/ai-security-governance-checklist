@@ -21,6 +21,31 @@ These resources can improve consistency and reduce repeated prompting, but they 
 - [ ] Material changes to skill instructions, dependencies, permissions, or external services trigger reassessment.
 - [ ] Deprecated, compromised, or unmaintained skills have a documented revocation path.
 
+## Per-Skill Licence And Upstream Terms
+
+Review the exact skill and its components for the intended use. A repository-wide licence, marketplace listing, metadata label or public download is not evidence that every bundled resource or external service has the same terms. These are governance review requirements, not legal advice or a claim of compliance; refer unresolved interpretation to the organisation's qualified legal/licensing reviewer.
+
+- [ ] Each skill has a review record bound to its canonical source URL, skill path, immutable commit/package digest and installed/rendered version. Preserve the reviewed licence text, notices and terms version or dated evidence reference, not only a mutable link or SPDX label.
+- [ ] Review per-directory/per-file licences, skill metadata, attribution files and exceptions alongside the repository licence. Resolve missing or conflicting terms rather than inheriting a permissive top-level label automatically.
+- [ ] Inventory bundled and runtime-downloaded code, scripts, dependencies, datasets, model weights, examples and other assets. Record each component's origin/version and applicable terms; a skill's licence does not establish rights to every dependency, dataset, model or generated output.
+- [ ] Document the intended use: internal or commercial use, research, modification, copying, redistribution, hosted access, model training and output publication as applicable. The reviewer records which uses are permitted, restricted or unresolved under the relevant terms instead of assuming one approval covers every use.
+- [ ] Review external API, database, hosted-model and other service terms separately from software licences, including the applicable account/agreement, access restrictions, acceptable use, input/output rights, retention, training use and redistribution conditions where relevant. Link data-egress decisions to the existing data-handling controls.
+- [ ] Identify applicable copyright, attribution, licence-copy, NOTICE, modification and source-disclosure obligations. Assign an owner and verify required notices survive packaging, rendering, installation and any permitted redistribution; do not copy a notice without checking its scope.
+- [ ] Record compatibility questions across combined materials and proposed distribution or service arrangements. An open-source badge, a working installation, or generated output is not a substitute for this review.
+- [ ] Name the accountable skill owner, technical reviewer and legal/licensing reviewer where required. Record the decision, rationale, allowed scope, restrictions, evidence references, approval date and next review date.
+- [ ] Missing, ambiguous, conflicting or unverified terms leave affected use unapproved pending clarification. Record the unresolved question, owner and next action; hold the affected installation, execution or distribution rather than treating silence as permission. An internal exception cannot grant rights that the organisation does not have.
+- [ ] Reassess after changes to the skill revision, bundled/downloaded components, publisher, licence or service terms, account agreement, rendering/distribution method or intended use. Compare against the approved record before rollout and suspend affected use if the previous decision no longer applies.
+
+Keep one component-level evidence record per material item, linked to the skill's approval record:
+
+```text
+Skill/source path + immutable revision -> component/version -> licence/terms evidence
+-> intended use and restrictions -> required notices/actions -> owner/reviewer
+-> approved / restricted / unresolved decision -> review date and change triggers
+```
+
+Record `unknown` and the blocking question when evidence is missing. Keep contracts and sensitive review material in an approved evidence store; this public checklist needs only safe references.
+
 ## Installation And Supply Chain
 
 - [ ] Installation is limited to approved sources and methods.
@@ -101,6 +126,7 @@ Keep evidence proportionate to risk, such as:
 - approved source and version or commit;
 - owner and permitted-use record;
 - dependency and external-service inventory;
+- per-skill/component licence and service-terms evidence, permitted-use decision, notice obligations, unresolved questions and reassessment history;
 - security or code review evidence;
 - data-classification and egress decisions;
 - installation/update/reconciliation/revocation records;
@@ -113,6 +139,7 @@ Keep evidence proportionate to risk, such as:
 These public projects illustrate patterns that informed the vendor-neutral controls above. They are design references, not dependencies or proof of compliance:
 
 - [K-Dense Scientific Agent Skills](https://github.com/K-Dense-AI/scientific-agent-skills) demonstrates a large portable skill library with specialist tooling, dependency guidance, reproducibility concerns, and security warnings around installing only needed skills.
+- Its [individual-skill licence guidance](https://github.com/K-Dense-AI/scientific-agent-skills/blob/91497e335489dcb544ec8ddc8f6b7ce5fd6d1121/README.md#individual-skill-licenses), reviewed 2026-10-01 at `91497e335489dcb544ec8ddc8f6b7ce5fd6d1121`, explicitly distinguishes individual skill terms from the repository's [MIT licence](https://github.com/K-Dense-AI/scientific-agent-skills/blob/91497e335489dcb544ec8ddc8f6b7ce5fd6d1121/LICENSE.md). For example, the pinned [PDF skill metadata](https://github.com/K-Dense-AI/scientific-agent-skills/blob/91497e335489dcb544ec8ddc8f6b7ce5fd6d1121/skills/pdf/SKILL.md) points to its own [licence terms](https://github.com/K-Dense-AI/scientific-agent-skills/blob/91497e335489dcb544ec8ddc8f6b7ce5fd6d1121/skills/pdf/LICENSE.txt). This supports per-skill review; it is not a finding that a particular use or redistribution is permitted. The broader component/service review controls above are local governance recommendations, not claims that upstream implements them.
 - [graft](https://github.com/Zealbase/graft) (MIT; reviewed 2026-09-24) demonstrates canonical agent definitions, provider-specific rendering/synchronisation, and explicit drift/conflict detection.
 - [Agency Agents](https://github.com/msitarzewski/agency-agents-app) (MIT; reviewed 2026-09-24) demonstrates deterministic tool-specific renders, an install ledger with source/render identity, reconciliation states, and backup-before-overwrite behaviour for modified installs.
 
