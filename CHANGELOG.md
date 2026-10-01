@@ -6,6 +6,7 @@ All notable repository changes are recorded here. This project uses date-based e
 
 ### Added
 
+- Separate, versioned collection-approval controls for usage telemetry, diagnostics and transcript sharing, including withdrawal/queued-upload handling, redaction limitations and adopter verification scenarios.
 - Per-skill licence and upstream-terms review controls covering component provenance, external services, permitted use, notices, evidence, unresolved terms and reassessment.
 - Repository-specific threat model covering assets, threat actors, trust boundaries, mitigations, residual risk, and review triggers.
 - Contribution guidance for checklist controls, framework mappings, templates, validation, and release notes.
