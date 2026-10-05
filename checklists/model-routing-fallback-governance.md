@@ -12,6 +12,32 @@ The goal is to keep optimisation inside an approved authorization boundary. A ch
 - [ ] Route approval records include the security/vendor review or policy basis for use.
 - [ ] Changes to provider terms, retention, hosting region, model family, or data-use policy trigger re-evaluation before the route remains eligible.
 
+## Effective Traffic-Path Coverage
+
+A permitted route and a deployed security component do not by themselves establish that a request passed through the intended controls. Apply the following checks at the actual enforcement points, whether these are gateways, application services or tool boundaries; a gateway is not a substitute for downstream authorization.
+
+- [ ] The owner maps actual primary, fallback and direct-client paths, including model calls, MCP/tool operations and agent-to-agent handoffs where present. Each path identifies its destination, environment, accountable owner and applicable policy/version.
+- [ ] Input guards, request transformations and response transformations are mapped to the operations they protect. Non-LLM traffic has operation-appropriate controls rather than being assumed covered by a prompt filter.
+- [ ] Effective configuration and an observed request identify where each control ran and whether it monitored, modified or blocked traffic. A policy verdict, a configured plugin and an application message saying "blocked" are not interchangeable evidence of enforcement.
+- [ ] Direct endpoints, alternate credentials and fallback routes are restricted or have equivalent approved controls. Documented exceptions have an owner, scope and expiry rather than silently bypassing the intended policy.
+- [ ] Agent identity and any represented user/delegation scope are distinguishable at each material hop. A shared transport credential or an upstream agent's claim does not replace scoped authorization; apply the [agent contract and delegation controls](agent-contract-orchestration-gates.md).
+- [ ] Request/output transformations preserve required evidence, task constraints and structured tool arguments, or stop for review when they cannot. Record the transformation/policy version without routinely logging sensitive content.
+- [ ] Evaluator timeout, unavailable policy state or malformed responses have explicit risk-appropriate failure behaviour. Where authorization or a required high-impact gate cannot be established, the action stops or escalates rather than silently passing.
+- [ ] Streaming and asynchronous paths identify the last enforcement point before content disclosure or tool side effects. Already released output or completed actions are not represented as retractable merely because a later check fails.
+- [ ] Coverage evidence states its environment, observation period, eligible paths/operations, tested subset and exclusions. Controls outside the observation boundary remain unknown, not automatically absent; route counts and request-weighted coverage are reported separately.
+
+### Adopter Verification Scenarios
+
+These are requirements for adopting systems, not runtime tests implemented or executed by this documentation repository. Use authorised synthetic fixtures and record expected decisions, actual enforcement and downstream evidence.
+
+| Scenario | Evidence to retain |
+| --- | --- |
+| Permitted baseline request | Correct task outcome and expected controls observed; blocking everything is not success |
+| Denied action on primary and fallback paths | Correlated denial plus downstream evidence that the protected operation did not execute |
+| Direct or delegated path with insufficient scope | Server/tool-side refusal, scoped actor identity and no unintended side effect |
+| Required evaluator unavailable or policy changed | Defined stop/escalation behaviour, policy/version evidence and no silent fallback around the gate |
+| Streaming or delayed tool operation | Enforcement occurs before the protected disclosure/action; limitations and any already released content are explicit |
+
 ## Task Classification And Selection
 
 - [ ] Routing considers task risk, reversibility, sensitivity, required capability, and verification cost rather than prompt length or price alone.
@@ -95,3 +121,5 @@ Retain evidence proportionate to risk, such as:
 This checklist is vendor-neutral. The controls are informed by general cost-aware routing, caching, fallback, and observability patterns used in public AI gateways, including [OmniRoute](https://github.com/BunsDev/omniroute), and by the companion [AI Token Efficiency Playbook model-routing guidance](https://github.com/ravinperera/ai-token-efficiency-playbook/blob/main/guidelines/model-routing.md).
 
 These are design references, not dependencies or evidence that a particular gateway satisfies this checklist. Do not reuse provider price tables or savings claims as durable governance facts; independently validate any quantitative claim used for a real deployment.
+
+The traffic-path section is informed by Kong's *The State of AI Governance*, user-supplied 18-page edition, pp. 6 and 13–16, reviewed 2026-10-05. Page 14 describes route-level prompt-injection guards, request transformers and response transformers in its observed cohort; page 15 calls for scoped agent authorization. A related [publisher article](https://konghq.com/blog/enterprise/enterprise-ai-governance) provides public context, not a substitute for the inspected PDF. The detailed evidence and test requirements above are original local recommendations. The report's gateway-cohort statistics are not adopted as enterprise-wide governance prevalence or proof that its control stack is sufficient. No PDF text, charts or artwork are reproduced. Source PDF SHA-256: `43867bd6a6b0e83dc4bbfdc0969d49352be53e59f48a1d69205b917e402d1417`.
