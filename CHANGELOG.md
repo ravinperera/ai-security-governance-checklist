@@ -6,6 +6,7 @@ All notable repository changes are recorded here. This project uses date-based e
 
 ### Added
 
+- Source-attributed AI attack-path checks for artifact/publisher intake, synthetic poisoned-RAG validation and suspected unauthorised model-service usage triage.
 - Actual AI traffic-path coverage and adopter verification scenarios for route-level enforcement, scoped identities, failure handling and explicit observation limits.
 - Separate, versioned collection-approval controls for usage telemetry, diagnostics and transcript sharing, including withdrawal/queued-upload handling, redaction limitations and adopter verification scenarios.
 - Per-skill licence and upstream-terms review controls covering component provenance, external services, permitted use, notices, evidence, unresolved terms and reassessment.

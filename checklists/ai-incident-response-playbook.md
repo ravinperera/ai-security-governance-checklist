@@ -37,6 +37,18 @@ Capture the minimum safe facts:
 | Medium | Contained unsafe output, policy breach, or limited exposure with no evidence of external access |
 | Low | Near miss, blocked attempt, or control weakness without impact |
 
+### Scenario: Suspected Unauthorised Model-Service Usage
+
+Use this scenario for unusual model-service discovery/invocation, unexpected identities or unexplained consumption. A spend spike or unusual API parameter is an investigation signal, not proof of credential compromise. Approved experiments, deployments, retry loops and accounting delays are alternative explanations to check.
+
+1. Identify the time window, initiating identity and credential reference, application/project, actual model/hosting route and environment. Correlate service audit events with approved jobs, deployment changes, request attempts and available billing evidence; keep sensitive parameters in the restricted incident record.
+2. Distinguish attempted discovery, denied calls, successful model invocations and downstream actions. Record logging gaps rather than treating no visible event as proof that no access occurred.
+3. The incident commander/security owner authorises proportionate containment under section 3, targeting the affected credential, route or workload. An anomaly alone is not blanket authority to disable unrelated services. Preserve evidence and record the decision and expected effect.
+4. Verify containment against authoritative service/audit state over a declared observation window. Confirm the prohibited route or identity is denied with an approved safe check, account for in-flight work and delayed usage records, and verify permitted workloads still function.
+5. Before recovery, assess other accessible services, sessions and derived data, rotate/revoke as authorised, and rerun relevant checks. Record residual uncertainty, recovery approver and follow-up owners using the existing closure process.
+
+This scenario is informed by the LLM-jacking and service-activity logging discussion in Datadog's *AI Security Best Practices Guide*, supplied 19-page PDF, pp. 6–7, reviewed 2026-10-05 ([publisher page](https://www.datadoghq.com/resources/ai-security-best-practices/); PDF SHA-256 `8dc1ffa039c7c6ba60c7860baf1270ef69b4ccbc84897f99cc5399995013d737`). Cost-anomaly alternatives and the operational sequence are local recommendations, not vendor-provided thresholds or a claim that every suspicious request is malicious. This document does not execute containment or change any service.
+
 ## 3. Immediate containment
 
 Choose the least disruptive actions that stop further harm:

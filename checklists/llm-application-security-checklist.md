@@ -69,6 +69,15 @@ Use this checklist when building or approving applications that use large langua
 - [ ] Container images are scanned.
 - [ ] CI/CD workflows are protected.
 
+### Artifact And Publisher Verification
+
+- [ ] Before approving an AI-suggested dependency, the owner verifies its intended package name, namespace, publisher and canonical source independently of the generated recommendation. A plausible or existing registry name is not sufficient evidence of identity or suitability.
+- [ ] Model-registry organisations, upload destinations and access invitations are verified through an approved independent channel before private artifacts or permissions are shared; visual branding or a matching organisation name is not sufficient.
+- [ ] Downloaded model/data artifacts record publisher, source, exact revision or digest, format and loader requirements. Custom loading code, install hooks and executable deserialization paths receive review before execution; an artifact described as data is not assumed inert.
+- [ ] Integrity checks use approved source/digest or signing-key evidence. A valid signature, checksum or clean vulnerability scan does not replace publisher review, loader analysis or behavioural validation.
+- [ ] Initial evaluation uses an approved isolated environment, bounded network/process permissions and no production credentials. Model, loader or dataset changes trigger applicable behavioural and security checks before promotion.
+- [ ] The approval record identifies the reviewer, artifact/version, permitted use, checks, unresolved risks and rollback source. Component terms and skill dependencies follow the existing [skill licence and supply-chain review](agent-skill-governance-checklist.md), rather than assuming one top-level licence covers everything.
+
 ## RAG And Vector Stores
 
 - [ ] Data sources are approved.
@@ -77,6 +86,16 @@ Use this checklist when building or approving applications that use large langua
 - [ ] Private documents are not retrievable by unauthorized users.
 - [ ] Embedding stores are backed up and protected.
 - [ ] Index deletion and retention are documented.
+
+### End-To-End Poisoned-Source Scenario
+
+This is a test design for adopting systems, not a runtime test implemented by this repository. Use an authorised disposable corpus with fictional documents, identifiers and mocked side-effect tools; do not send malicious material to real employees or production indexes.
+
+- [ ] Compare a legitimate source with a fictional externally supplied message that contains conflicting instructions or decision-critical facts, then trace ingestion, indexing, retrieval and the resulting answer/action under the same authorised user scope.
+- [ ] Retrieval permission does not promote source content to trusted instructions. Consequential values are checked against the designated authoritative fixture; conflicting retrieved claims trigger verification or escalation rather than silently replacing the authoritative record.
+- [ ] Required human approval and server-side tool authorization remain effective. Record that mocked prohibited disclosure/actions did not occur, alongside the legitimate-task result; an injection alert alone is not the acceptance criterion.
+- [ ] Recovery quarantines the suspect source while preserving restricted evidence and checks affected indexes, summaries, caches and durable memory. Repeat retrieval after invalidation/re-indexing and recovery so removed or revoked content is not silently restored; use the [memory lifecycle checks](agent-memory-governance-checklist.md).
+- [ ] Retain fixture/source revisions, model and ingestion/index versions, caller scope, expected versus observed outcomes, reviewer and unresolved gaps. Report the scenario's limits rather than claiming that one passing test eliminates prompt injection.
 
 ## Persistent Agent Memory And Code Indexes
 
@@ -105,3 +124,7 @@ Use the [Agent Memory And Code Index Governance Checklist](agent-memory-governan
 - [ ] Rollback path exists for model or prompt changes.
 - [ ] Cost monitoring is enabled.
 - [ ] Abuse monitoring is enabled.
+
+## Source And Scope Of The Added Scenarios
+
+Datadog's *AI Security Best Practices Guide*, supplied 19-page PDF, reports poisoned-email/RAG examples on pp. 5 and 15–18 and hallucinated-package, registry-impersonation and model-loader risks on pp. 10–13. Reviewed 2026-10-05; [publisher landing page](https://www.datadoghq.com/resources/ai-security-best-practices/). PDF SHA-256: `8dc1ffa039c7c6ba60c7860baf1270ef69b4ccbc84897f99cc5399995013d737`. The intake records and synthetic acceptance/recovery checks above are original local recommendations informed by those reported examples, not an independent investigation of the incidents or a copied vendor test suite. No PDF text, artwork, live attack or product subscription is included or required. For the infrastructure-abuse example, use the existing [incident-response playbook](ai-incident-response-playbook.md).
