@@ -46,6 +46,8 @@ The following are requirements for adopting systems, not tests implemented or ex
 - [ ] A local opt-in conflicts with organisation policy or an applicable opt-out: the more restrictive rule wins and the outcome is auditable without leaking content.
 - [ ] Sanitization removes a synthetic credential marker but leaves fictional confidential code: the remaining payload is not automatically considered safe to export.
 
+For a copyable evidence record, use [AI Telemetry Collection Approval Record](../templates/ai-telemetry-collection-approval.md). Keep one record per approved scope/version rather than using a single blanket approval for routine counters and optional content sharing.
+
 ## Identity And Workforce Monitoring
 
 - [ ] Individual-level telemetry is collected only when there is a defined operational need that cannot be met with aggregate or pseudonymous data.
