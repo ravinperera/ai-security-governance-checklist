@@ -54,6 +54,7 @@ This repository focuses on practical questions:
 │   ├── ai-risk-register.csv
 │   ├── ai-system-inventory.csv
 │   ├── ai-transparency-evidence-register.csv
+│   ├── ai-telemetry-collection-approval.md
 │   ├── ai-vendor-questionnaire.md
 │   ├── ai-tool-exception-request.md
 │   └── approved-ai-tools-register.csv
@@ -90,7 +91,7 @@ If an agent can discover or load reusable skills, procedural instruction packs, 
 
 If an application or gateway can dynamically choose or fall back between model tiers, providers, deployments, regions, or cached routes, use the [Model Routing And Fallback Governance Checklist](checklists/model-routing-fallback-governance.md) to keep cost, quota, cache, latency, and availability optimisation inside approved capability and data boundaries.
 
-If engineering or AI platforms collect token, cost, cache, retry, routing, latency, or productivity telemetry, use the [AI Usage, Token, And Cost Telemetry Governance Checklist](checklists/ai-usage-telemetry-governance.md) to minimise sensitive collection, govern workforce use, distinguish correlation from causation in outcome attribution, and keep cost/ROI claims reproducible.
+If engineering or AI platforms collect token, cost, cache, retry, routing, latency, or productivity telemetry, use the [AI Usage, Token, And Cost Telemetry Governance Checklist](checklists/ai-usage-telemetry-governance.md) to minimise sensitive collection, govern workforce use, distinguish correlation from causation in outcome attribution, and keep cost/ROI claims reproducible. Use the [AI Telemetry Collection Approval Record](templates/ai-telemetry-collection-approval.md) to retain a versioned decision for each approved collection or optional content-sharing scope.
 
 For EU-facing systems and content use cases, use the [EU AI Act Article 50 Transparency Readiness Checklist](checklists/eu-ai-act-article-50-transparency.md) with the [AI transparency evidence register](templates/ai-transparency-evidence-register.csv). Article 50 applicability is fact-specific, so treat the checklist as engineering/governance support rather than legal advice and obtain jurisdiction-specific review.
 
