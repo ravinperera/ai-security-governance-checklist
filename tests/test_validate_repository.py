@@ -276,5 +276,80 @@ class RepositoryValidationTests(unittest.TestCase):
         self.assertTrue(any("contains a NUL byte" in error for error in errors))
 
 
+    def test_missing_reference_style_target_fails(self) -> None:
+        errors = self.run_validation(
+            {"README.md": "[guide]: docs/missing.md\n"}
+        )
+        self.assertTrue(
+            any("missing local link target: docs/missing.md" in error for error in errors)
+        )
+
+    def test_reference_style_angle_target_with_spaces_passes(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": "See [Guide][guide].\n\n[guide]: <docs/my guide.md>\n",
+                "docs/my guide.md": "# Guide\n",
+            }
+        )
+        self.assertEqual([], errors)
+
+    def test_reference_style_external_target_is_ignored(self) -> None:
+        errors = self.run_validation(
+            {"README.md": "[external]: https://example.com/docs\n"}
+        )
+        self.assertEqual([], errors)
+
+    def test_reference_style_percent_encoded_target_passes(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": "[guide]: docs/guide%20one.md?view=1#intro\n",
+                "docs/guide one.md": "# Guide\n",
+            }
+        )
+        self.assertEqual([], errors)
+
+    def test_reference_style_repository_escape_fails(self) -> None:
+        errors = self.run_validation(
+            {"README.md": "[outside]: ../outside.md\n"}
+        )
+        self.assertTrue(
+            any("local link escapes repository" in error for error in errors)
+        )
+
+    def test_long_fences_protect_nested_links_and_reference_definitions(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    "````markdown\n"
+                    "```python\n"
+                    "[ignored]: docs/ignored.md\n"
+                    "[inside](docs/not-created.md)\n"
+                    "```\n"
+                    "````\n"
+                    "[outside]: docs/outside.md\n"
+                )
+            }
+        )
+        self.assertEqual(
+            ["README.md:7: missing local link target: docs/outside.md"],
+            errors,
+        )
+
+    def test_tilde_fence_and_closer_info_do_not_expose_links(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    "~~~~markdown\n"
+                    "~~~\n"
+                    "[inside]: docs/inside.md\n"
+                    "~~~~not-a-closer\n"
+                    "[still-inside](docs/missing.md)\n"
+                    "~~~~~\n"
+                )
+            }
+        )
+        self.assertEqual([], errors)
+
+
 if __name__ == "__main__":
     unittest.main()

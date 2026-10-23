@@ -14,6 +14,8 @@ from typing import Iterable
 
 TEXT_SUFFIXES = {".md", ".csv", ".json", ".yml", ".yaml"}
 LINK_PATTERN = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+REFERENCE_LINK_PATTERN = re.compile(r"^ {0,3}\[[^\]\n]+\]:[ \t]*(<[^>\n]+>|[^ \t<>]+)")
+FENCE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 ISO_DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 REGISTER_UNIQUE_KEYS = {
     "ai-control-ownership-matrix.csv": "Control ID",
@@ -245,17 +247,28 @@ def check_example_template_schemas(root: Path) -> list[str]:
 
 
 def markdown_targets(text: str) -> Iterable[tuple[int, str]]:
-    in_fence = False
+    active_fence: str | None = None
     for number, line in enumerate(text.splitlines(), start=1):
-        stripped = line.lstrip()
-        if stripped.startswith("```") or stripped.startswith("~~~"):
-            in_fence = not in_fence
+        fence = FENCE_PATTERN.match(line)
+        if active_fence is not None:
+            if (
+                fence
+                and fence.group(1)[0] == active_fence[0]
+                and len(fence.group(1)) >= len(active_fence)
+                and not fence.group(2).strip()
+            ):
+                active_fence = None
             continue
-        if in_fence:
+
+        if fence and (fence.group(1)[0] != "`" or "`" not in fence.group(2)):
+            active_fence = fence.group(1)
             continue
+
         for match in LINK_PATTERN.finditer(line):
             yield number, match.group(1).strip()
-
+        reference = REFERENCE_LINK_PATTERN.match(line)
+        if reference:
+            yield number, reference.group(1).strip()
 
 def check_markdown_links(path: Path, root: Path) -> list[str]:
     relative = path.relative_to(root)
