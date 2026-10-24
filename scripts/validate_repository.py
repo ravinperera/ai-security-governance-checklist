@@ -126,7 +126,7 @@ def check_csv(path: Path, root: Path) -> list[str]:
     relative = path.relative_to(root)
     try:
         with path.open(newline="", encoding="utf-8") as handle:
-            rows = list(csv.reader(handle))
+            rows = list(csv.reader(handle, strict=True))
     except (csv.Error, UnicodeDecodeError) as exc:
         return [f"{relative}: invalid CSV ({exc})"]
 
@@ -212,7 +212,7 @@ def check_csv(path: Path, root: Path) -> list[str]:
 
 def csv_header(path: Path) -> list[str]:
     with path.open(newline="", encoding="utf-8") as handle:
-        return next(csv.reader(handle), [])
+        return next(csv.reader(handle, strict=True), [])
 
 
 def check_example_template_schemas(root: Path) -> list[str]:
