@@ -51,6 +51,30 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertTrue(any("expected 2 column" in error for error in errors))
 
+
+    def test_unterminated_quoted_csv_field_fails(self) -> None:
+        errors = self.run_validation(
+            {"templates/register.csv": 'Name\n"unterminated\n'}
+        )
+        self.assertTrue(any("invalid CSV" in error for error in errors))
+
+    def test_extra_characters_after_closing_quote_fail(self) -> None:
+        errors = self.run_validation(
+            {"templates/register.csv": 'Name,Owner\n"Bad"junk,Security\n'}
+        )
+        self.assertTrue(any("invalid CSV" in error for error in errors))
+
+    def test_valid_quoted_commas_and_multiline_fields_pass(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/register.csv": (
+                    'Name,Owner\n"Mary, Jane",Security\n'
+                    '"Multi\nline",Platform\n'
+                )
+            }
+        )
+        self.assertEqual([], errors)
+
     def test_uneven_example_csv_rows_fail(self) -> None:
         errors = self.run_validation(
             {
