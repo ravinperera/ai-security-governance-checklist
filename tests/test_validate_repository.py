@@ -433,5 +433,46 @@ class RepositoryValidationTests(unittest.TestCase):
             errors,
         )
 
+    def test_parenthesised_local_markdown_link_passes(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": "[Guide](docs/guide(v2).md)\n",
+                "docs/guide(v2).md": "# Guide\n",
+            }
+        )
+        self.assertEqual([], errors)
+
+    def test_escaped_parentheses_and_optional_image_title_pass(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": r'![Plot](docs/plot\(v2\).png "Plot (v2)")' + "\n",
+                "docs/plot(v2).png": "placeholder\n",
+            }
+        )
+        self.assertEqual([], errors)
+
+    def test_angle_bracket_target_with_spaces_and_parentheses_passes(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": "[Report](<docs/Q4 (final).md>)\n",
+                "docs/Q4 (final).md": "# Report\n",
+            }
+        )
+        self.assertEqual([], errors)
+
+    def test_missing_parenthesised_link_still_fails(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    "[Absent](docs/missing(v3).md)\n"
+                    "[Website](https://example.com/a(b))\n"
+                )
+            }
+        )
+        self.assertEqual(
+            ["README.md:1: missing local link target: docs/missing(v3).md"],
+            errors,
+        )
+
 if __name__ == "__main__":
     unittest.main()

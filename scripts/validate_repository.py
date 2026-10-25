@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Iterable
 
 TEXT_SUFFIXES = {".md", ".csv", ".json", ".yml", ".yaml"}
-LINK_PATTERN = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+LINK_START_PATTERN = re.compile(r"!?\[[^\]\n]*\]\(")
 REFERENCE_LINK_PATTERN = re.compile(r"^ {0,3}\[[^\]\n]+\]:[ \t]*(<[^>\n]+>|[^ \t<>]+)")
 FENCE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 ISO_DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -277,6 +277,26 @@ def mask_inline_code(text: str) -> str:
     return "".join(searchable)
 
 
+def inline_link_destinations(line: str) -> Iterable[str]:
+    """Extract inline destinations while respecting escaped and nested parentheses."""
+    for opening in LINK_START_PATTERN.finditer(line):
+        depth = 1
+        escaped = False
+        for position in range(opening.end(), len(line)):
+            character = line[position]
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == "(":
+                depth += 1
+            elif character == ")":
+                depth -= 1
+                if depth == 0:
+                    yield line[opening.end() : position]
+                    break
+
+
 def markdown_targets(text: str) -> Iterable[tuple[int, str]]:
     active_fence: str | None = None
     visible_lines: list[str] = []
@@ -302,8 +322,8 @@ def markdown_targets(text: str) -> Iterable[tuple[int, str]]:
 
     searchable_text = mask_inline_code("\n".join(visible_lines))
     for number, line in enumerate(searchable_text.splitlines(), start=1):
-        for match in LINK_PATTERN.finditer(line):
-            yield number, match.group(1).strip()
+        for destination in inline_link_destinations(line):
+            yield number, destination.strip()
         reference = REFERENCE_LINK_PATTERN.match(line)
         if reference:
             yield number, reference.group(1).strip()
@@ -316,8 +336,10 @@ def check_markdown_links(path: Path, root: Path) -> list[str]:
 
     for number, raw_target in markdown_targets(text):
         target = raw_target
-        if target.startswith("<") and target.endswith(">"):
-            target = target[1:-1].strip()
+        if target.startswith("<") and ">" in target:
+            target = target[1 : target.index(">")].strip()
+        else:
+            target = target.split(maxsplit=1)[0] if target else ""
 
         lowered = target.casefold()
         if (
@@ -330,7 +352,11 @@ def check_markdown_links(path: Path, root: Path) -> list[str]:
         ):
             continue
 
-        target = urllib.parse.unquote(target.split("#", 1)[0].split("?", 1)[0])
+        target = re.sub(
+            r"\\([()])",
+            r"\1",
+            urllib.parse.unquote(target.split("#", 1)[0].split("?", 1)[0]),
+        )
         if not target:
             continue
 
