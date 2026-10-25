@@ -246,9 +246,41 @@ def check_example_template_schemas(root: Path) -> list[str]:
     return errors
 
 
+def mask_inline_code(text: str) -> str:
+    """Mask paired backtick spans without losing Markdown source line numbers."""
+    runs = []
+    for match in re.finditer(r"`+", text):
+        position = match.start() - 1
+        backslashes = 0
+        while position >= 0 and text[position] == "\\":
+            backslashes += 1
+            position -= 1
+        if backslashes % 2 == 0:
+            runs.append(match)
+
+    searchable = list(text)
+    index = 0
+    while index < len(runs):
+        closing = index + 1
+        while (
+            closing < len(runs)
+            and len(runs[closing].group()) != len(runs[index].group())
+        ):
+            closing += 1
+        if closing == len(runs):
+            index += 1
+            continue
+        for position in range(runs[index].start(), runs[closing].end()):
+            if text[position] not in "\r\n":
+                searchable[position] = " "
+        index = closing + 1
+    return "".join(searchable)
+
+
 def markdown_targets(text: str) -> Iterable[tuple[int, str]]:
     active_fence: str | None = None
-    for number, line in enumerate(text.splitlines(), start=1):
+    visible_lines: list[str] = []
+    for line in text.splitlines():
         fence = FENCE_PATTERN.match(line)
         if active_fence is not None:
             if (
@@ -258,17 +290,24 @@ def markdown_targets(text: str) -> Iterable[tuple[int, str]]:
                 and not fence.group(2).strip()
             ):
                 active_fence = None
+            visible_lines.append("")
             continue
 
         if fence and (fence.group(1)[0] != "`" or "`" not in fence.group(2)):
             active_fence = fence.group(1)
+            visible_lines.append("")
             continue
 
+        visible_lines.append(line)
+
+    searchable_text = mask_inline_code("\n".join(visible_lines))
+    for number, line in enumerate(searchable_text.splitlines(), start=1):
         for match in LINK_PATTERN.finditer(line):
             yield number, match.group(1).strip()
         reference = REFERENCE_LINK_PATTERN.match(line)
         if reference:
             yield number, reference.group(1).strip()
+
 
 def check_markdown_links(path: Path, root: Path) -> list[str]:
     relative = path.relative_to(root)
