@@ -406,7 +406,7 @@ class RepositoryValidationTests(unittest.TestCase):
         errors = self.run_validation(
             {
                 "README.md": (
-                    r"\\`[first](docs/not-created.md)\\`" + "\n"
+                    r"\`[first](docs/not-created.md)\`" + "\n"
                     + "`unclosed [second](docs/missing-too.md)\n"
                 )
             }
