@@ -375,5 +375,63 @@ class RepositoryValidationTests(unittest.TestCase):
         self.assertEqual([], errors)
 
 
+    def test_inline_code_example_links_are_ignored(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    "`[example](docs/not-created.md)` and "
+                    "[guide](docs/guide.md)\n"
+                ),
+                "docs/guide.md": "# Guide\n",
+            }
+        )
+        self.assertEqual([], errors)
+
+    def test_multiline_and_multi_backtick_code_spans_hide_links(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    "``\n"
+                    "[example](docs/not-created.md)\n"
+                    "[sample]: docs/not-created.md\n"
+                    "``\n"
+                    "[guide](docs/guide.md)\n"
+                ),
+                "docs/guide.md": "# Guide\n",
+            }
+        )
+        self.assertEqual([], errors)
+
+    def test_escaped_and_unclosed_inline_delimiters_do_not_hide_links(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    r"\`[first](docs/not-created.md)\`" + "\n"
+                    + "`unclosed [second](docs/missing-too.md)\n"
+                )
+            }
+        )
+        self.assertTrue(any("missing local link target: docs/not-created.md" in error for error in errors))
+        self.assertTrue(any("missing local link target: docs/missing-too.md" in error for error in errors))
+
+    def test_fences_and_inline_spans_preserve_real_link_line_numbers(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    "````markdown\n"
+                    "```python\n"
+                    "[ignored](docs/missing-fence.md)\n"
+                    "```\n"
+                    "````\n"
+                    "`[ignored](docs/missing-inline.md)`\n"
+                    "[real](docs/missing-real.md)\n"
+                )
+            }
+        )
+        self.assertEqual(
+            ["README.md:7: missing local link target: docs/missing-real.md"],
+            errors,
+        )
+
 if __name__ == "__main__":
     unittest.main()
