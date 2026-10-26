@@ -246,17 +246,23 @@ def check_example_template_schemas(root: Path) -> list[str]:
     return errors
 
 
+def is_unescaped(text: str, position: int) -> bool:
+    """Whether a character is preceded by an even number of backslashes."""
+    backslashes = 0
+    position -= 1
+    while position >= 0 and text[position] == "\\":
+        backslashes += 1
+        position -= 1
+    return backslashes % 2 == 0
+
+
 def mask_inline_code(text: str) -> str:
     """Mask paired backtick spans without losing Markdown source line numbers."""
-    runs = []
-    for match in re.finditer(r"`+", text):
-        position = match.start() - 1
-        backslashes = 0
-        while position >= 0 and text[position] == "\\":
-            backslashes += 1
-            position -= 1
-        if backslashes % 2 == 0:
-            runs.append(match)
+    runs = [
+        match
+        for match in re.finditer(r"`+", text)
+        if is_unescaped(text, match.start())
+    ]
 
     searchable = list(text)
     index = 0
@@ -280,6 +286,11 @@ def mask_inline_code(text: str) -> str:
 def inline_link_destinations(line: str) -> Iterable[str]:
     """Extract inline destinations while respecting escaped and nested parentheses."""
     for opening in LINK_START_PATTERN.finditer(line):
+        bracket_position = opening.start() + (
+            1 if opening.group().startswith("!") else 0
+        )
+        if not is_unescaped(line, bracket_position):
+            continue
         depth = 1
         escaped = False
         for position in range(opening.end(), len(line)):
