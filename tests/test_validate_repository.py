@@ -474,5 +474,31 @@ class RepositoryValidationTests(unittest.TestCase):
             errors,
         )
 
+    def test_escaped_markdown_brackets_do_not_create_links(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    r"\[literal](docs/missing-one.md)" + "\n"
+                    + r"\\\[literal](docs/missing-three.md)" + "\n"
+                    + r"!\[literal image](docs/missing-image.png)" + "\n"
+                )
+            }
+        )
+        self.assertEqual([], errors)
+
+    def test_even_backslashes_and_real_images_still_validate(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    r"\\[real](docs/missing-real.md)" + "\n"
+                    + "![image](docs/missing-image.png)\n"
+                )
+            }
+        )
+        self.assertEqual(
+            2, sum("missing local link target" in error for error in errors)
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
