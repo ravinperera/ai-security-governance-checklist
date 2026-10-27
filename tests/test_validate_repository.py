@@ -75,6 +75,47 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertEqual([], errors)
 
+    def test_row_width_error_uses_physical_line_after_multiline_csv(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/register.csv": (
+                    'Name,Owner\n"first\nline",Security\nsecond\n'
+                )
+            }
+        )
+        self.assertIn(
+            "templates/register.csv:4: expected 2 column(s), found 1", errors
+        )
+
+    def test_duplicate_key_uses_physical_line_after_multiline_csv(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/ai-risk-register.csv": (
+                    'Risk ID,Notes\nAI-RISK-1,"first\nline"\nAI-RISK-1,again\n'
+                )
+            }
+        )
+        self.assertIn(
+            "templates/ai-risk-register.csv:4: duplicate Risk ID "
+            "(first seen on row 2)",
+            errors,
+        )
+
+    def test_date_error_uses_physical_line_after_multiline_csv(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/approved-ai-tools-register.csv": (
+                    'Tool Name,Review Date\n"Example\nTool",2026-12-17\n'
+                    'Other,2026-02-30\n'
+                )
+            }
+        )
+        self.assertIn(
+            "templates/approved-ai-tools-register.csv:4: "
+            "Review Date must use YYYY-MM-DD",
+            errors,
+        )
+
     def test_uneven_example_csv_rows_fail(self) -> None:
         errors = self.run_validation(
             {
