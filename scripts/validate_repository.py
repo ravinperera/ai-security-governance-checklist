@@ -126,7 +126,14 @@ def check_csv(path: Path, root: Path) -> list[str]:
     relative = path.relative_to(root)
     try:
         with path.open(newline="", encoding="utf-8") as handle:
-            rows = list(csv.reader(handle, strict=True))
+            reader = csv.reader(handle, strict=True)
+            rows: list[list[str]] = []
+            row_start_lines: list[int] = []
+            next_line = 1
+            for row in reader:
+                rows.append(row)
+                row_start_lines.append(next_line)
+                next_line = reader.line_num + 1
     except (csv.Error, UnicodeDecodeError) as exc:
         return [f"{relative}: invalid CSV ({exc})"]
 
@@ -154,7 +161,7 @@ def check_csv(path: Path, root: Path) -> list[str]:
         errors.append(f"{relative}: duplicate header(s): {', '.join(duplicates)}")
 
     expected = len(header)
-    for number, row in enumerate(rows[1:], start=2):
+    for number, row in zip(row_start_lines[1:], rows[1:]):
         if not row or all(not value.strip() for value in row):
             continue
         if len(row) != expected:
@@ -166,7 +173,7 @@ def check_csv(path: Path, root: Path) -> list[str]:
     if unique_key and unique_key in header:
         key_index = header.index(unique_key)
         seen: dict[str, int] = {}
-        for number, row in enumerate(rows[1:], start=2):
+        for number, row in zip(row_start_lines[1:], rows[1:]):
             if not row or all(not value.strip() for value in row):
                 continue
             if len(row) <= key_index:
@@ -189,7 +196,7 @@ def check_csv(path: Path, root: Path) -> list[str]:
         for index, name in enumerate(header)
         if is_date_header(name)
     ]
-    for number, row in enumerate(rows[1:], start=2):
+    for number, row in zip(row_start_lines[1:], rows[1:]):
         for index, name in date_columns:
             if len(row) <= index:
                 continue
