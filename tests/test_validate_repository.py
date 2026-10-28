@@ -125,6 +125,41 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertTrue(any("expected 2 column" in error for error in errors))
 
+    def test_utf8_bom_cannot_bypass_unique_identifier_check(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/ai-risk-register.csv": (
+                    "\ufeffRisk ID,Owner\n"
+                    "AI-RISK-001,Security\n"
+                    "AI-RISK-001,Platform\n"
+                )
+            }
+        )
+        self.assertIn(
+            "templates/ai-risk-register.csv:3: duplicate Risk ID "
+            "(first seen on row 2)",
+            errors,
+        )
+
+    def test_utf8_bom_cannot_bypass_first_column_date_check(self) -> None:
+        errors = self.run_validation(
+            {"templates/register.csv": "\ufeffReview Date,Owner\n2026-02-30,Security\n"}
+        )
+        self.assertIn(
+            "templates/register.csv:2: Review Date must use YYYY-MM-DD", errors
+        )
+
+    def test_utf8_bom_example_header_matches_plain_template(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/ai-risk-register.csv": "Risk ID,Owner\nAI-RISK-001,Security\n",
+                "examples/example-ai-risk-register.csv": (
+                    "\ufeffRisk ID,Owner\nAI-RISK-002,Platform\n"
+                ),
+            }
+        )
+        self.assertEqual([], errors)
+
     def test_duplicate_risk_ids_fail(self) -> None:
         errors = self.run_validation(
             {

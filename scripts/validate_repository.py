@@ -125,7 +125,7 @@ def is_date_header(value: str) -> bool:
 def check_csv(path: Path, root: Path) -> list[str]:
     relative = path.relative_to(root)
     try:
-        with path.open(newline="", encoding="utf-8") as handle:
+        with path.open(newline="", encoding="utf-8-sig") as handle:
             reader = csv.reader(handle, strict=True)
             rows: list[list[str]] = []
             row_start_lines: list[int] = []
@@ -218,7 +218,7 @@ def check_csv(path: Path, root: Path) -> list[str]:
 
 
 def csv_header(path: Path) -> list[str]:
-    with path.open(newline="", encoding="utf-8") as handle:
+    with path.open(newline="", encoding="utf-8-sig") as handle:
         return next(csv.reader(handle, strict=True), [])
 
 
