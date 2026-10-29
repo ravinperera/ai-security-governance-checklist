@@ -170,8 +170,17 @@ def check_csv(path: Path, root: Path) -> list[str]:
             )
 
     unique_key = register_unique_key(path)
-    if unique_key and unique_key in header:
-        key_index = header.index(unique_key)
+    key_index = next(
+        (
+            index
+            for index, name in enumerate(header)
+            if unique_key and name.strip().casefold() == unique_key.casefold()
+        ),
+        None,
+    )
+    if unique_key and key_index is None:
+        errors.append(f"{relative}: missing required {unique_key} header")
+    if key_index is not None:
         seen: dict[str, int] = {}
         for number, row in zip(row_start_lines[1:], rows[1:]):
             if not row or all(not value.strip() for value in row):

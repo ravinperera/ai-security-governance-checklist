@@ -160,6 +160,39 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertEqual([], errors)
 
+
+    def test_variant_identifier_header_still_checks_duplicate_ids(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/ai-risk-register.csv": (
+                    " risk id ,Owner\n"
+                    "AI-RISK-001,Security\n"
+                    "AI-RISK-001,Platform\n"
+                )
+            }
+        )
+        self.assertTrue(any("duplicate Risk ID" in error for error in errors))
+
+    def test_required_identifier_header_cannot_be_removed(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/approved-ai-tools-register.csv": (
+                    "Vendor,Owner\nExample,Security\n"
+                ),
+                "examples/example-ai-risk-register.csv": (
+                    "Owner,Status\nSecurity,Open\n"
+                ),
+            }
+        )
+        self.assertIn(
+            "templates/approved-ai-tools-register.csv: missing required Tool Name header",
+            errors,
+        )
+        self.assertIn(
+            "examples/example-ai-risk-register.csv: missing required Risk ID header",
+            errors,
+        )
+
     def test_duplicate_risk_ids_fail(self) -> None:
         errors = self.run_validation(
             {
