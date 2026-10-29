@@ -17,6 +17,7 @@ All notable repository changes are recorded here. This project uses date-based e
 
 ### Changed
 
+- Public-example credential scanning now detects additional GitHub OAuth, user, installation and refresh token shapes while leaving redacted/partial examples valid and never echoing matched values.
 - Governance CSV validation now requires identifier headers for known registers and continues duplicate/blank-ID checks when header case or surrounding whitespace varies.
 
 ## 2026-07-30
