@@ -15,6 +15,10 @@ All notable repository changes are recorded here. This project uses date-based e
 - Contribution guidance for checklist controls, framework mappings, templates, validation, and release notes.
 - Structured issue templates for checklist improvements and framework mapping requests.
 
+### Changed
+
+- Governance CSV validation now requires identifier headers for known registers and continues duplicate/blank-ID checks when header case or surrounding whitespace varies.
+
 ## 2026-07-30
 
 ### Added
