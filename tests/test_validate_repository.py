@@ -367,6 +367,32 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
+    def test_additional_github_token_variants_fail_without_leaking_values(self) -> None:
+        for prefix in ("gho", "ghu", "ghs", "ghr"):
+            with self.subTest(prefix=prefix):
+                token = f"{prefix}_{'A' * 36}"
+                errors = self.run_validation(
+                    {"docs/example.md": f"token: `{token}`\n"}
+                )
+                self.assertEqual(
+                    ["docs/example.md:1: possible unredacted GitHub token variant"],
+                    errors,
+                )
+
+    def test_redacted_and_short_github_token_variants_pass(self) -> None:
+        for prefix in ("gho", "ghu", "ghs", "ghr"):
+            with self.subTest(prefix=prefix):
+                errors = self.run_validation(
+                    {
+                        "docs/example.md": (
+                            "# Synthetic placeholders\n\n"
+                            f"`{prefix}_<redacted>`\n"
+                            f"`{prefix}_{'A' * 29}`\n"
+                        )
+                    }
+                )
+                self.assertEqual([], errors)
+
     def test_repository_escape_markdown_link_fails(self) -> None:
         errors = self.run_validation(
             {"README.md": "# Example\n\nSee [outside](../outside.md).\n"}
