@@ -33,6 +33,10 @@ SECRET_PATTERNS = (
         re.compile(r"\bghp_[A-Za-z0-9]{36}\b"),
     ),
     (
+        "GitHub token variant",
+        re.compile(r"\b(?:gho|ghu|ghs|ghr)_[A-Za-z0-9]{30,255}\b"),
+    ),
+    (
         "GitHub fine-grained personal access token",
         re.compile(r"\bgithub_pat_[A-Za-z0-9_]{40,}\b"),
     ),
