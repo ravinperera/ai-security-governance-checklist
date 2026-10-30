@@ -12,7 +12,7 @@ from datetime import date
 from pathlib import Path
 from typing import Iterable
 
-TEXT_SUFFIXES = {".md", ".csv", ".json", ".yml", ".yaml"}
+TEXT_SUFFIXES = {".md", ".csv", ".json", ".yml", ".yaml", ".py", ".sh"}
 LINK_START_PATTERN = re.compile(r"!?\[[^\]\n]*\]\(")
 REFERENCE_LINK_PATTERN = re.compile(r"^ {0,3}\[[^\]\n]+\]:[ \t]*(<[^>\n]+>|[^ \t<>]+)")
 FENCE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
