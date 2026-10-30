@@ -367,7 +367,7 @@ class RepositoryValidationTests(unittest.TestCase):
         errors = self.run_validation(
             {
                 "docs/example.md": (
-                    "# Unsafe example\n\n-----BEGIN PRIVATE KEY-----\n"
+                    "# Unsafe example\n\n" + "-----BEGIN " + "PRIVATE KEY-----\n"
                 )
             }
         )
