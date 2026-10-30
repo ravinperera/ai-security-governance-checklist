@@ -333,13 +333,35 @@ class RepositoryValidationTests(unittest.TestCase):
         errors = self.run_validation(
             {
                 "examples/example-config.yml": (
-                    "access_key_id: AKIA1234567890ABCDEF\n"
+                    "access_key_id: " + "AKIA" + "1234567890ABCDEF\n"
                 )
             }
         )
         self.assertTrue(
             any("possible unredacted AWS access key ID" in error for error in errors)
         )
+
+
+    def test_synthetic_keys_in_python_and_shell_are_flagged(self) -> None:
+        synthetic = "AKIA" + "1234567890ABCDEF"
+        for filename in ("scripts/example.py", "scripts/example.sh"):
+            with self.subTest(filename=filename):
+                errors = self.run_validation(
+                    {filename: f"# synthetic key: {synthetic}\n"}
+                )
+                self.assertEqual(
+                    [f"{filename}:1: possible unredacted AWS access key ID"],
+                    errors,
+                )
+
+    def test_redacted_scripting_placeholders_pass(self) -> None:
+        errors = self.run_validation(
+            {
+                "scripts/example.py": "# token: ghp_<redacted>\n",
+                "scripts/example.sh": "# key: AKIA<redacted>\n",
+            }
+        )
+        self.assertEqual([], errors)
 
     def test_private_key_header_fails(self) -> None:
         errors = self.run_validation(
