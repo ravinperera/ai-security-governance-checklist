@@ -362,7 +362,11 @@ def markdown_targets(text: str) -> Iterable[tuple[int, str]]:
 
 def check_markdown_links(path: Path, root: Path) -> list[str]:
     relative = path.relative_to(root)
-    text = path.read_text(encoding="utf-8")
+    try:
+        text = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        # check_text_file already reported the invalid encoding for this file.
+        return []
     errors: list[str] = []
 
     for number, raw_target in markdown_targets(text):
