@@ -46,7 +46,7 @@ SECRET_PATTERNS = (
     ),
     (
         "PEM private key header",
-        re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
+        re.compile(r"-----BEGIN (?:(?:RSA|EC|OPENSSH|ENCRYPTED) )?PRIVATE KEY-----"),
     ),
 )
 
