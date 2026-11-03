@@ -474,6 +474,23 @@ class RepositoryValidationTests(unittest.TestCase):
         self.assertTrue(any("contains a NUL byte" in error for error in errors))
 
 
+    def test_invalid_utf8_markdown_reports_error_and_checks_other_files(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "README.md").write_bytes(b"# Invalid UTF-8\n\xff\n")
+            (root / "other.md").write_text(
+                "[missing](docs/absent.md)\n", encoding="utf-8"
+            )
+            errors = validation.validate(root)
+
+        self.assertEqual(len(errors), 2)
+        self.assertTrue(
+            any(error.startswith("README.md: invalid UTF-8") for error in errors)
+        )
+        self.assertIn(
+            "other.md:1: missing local link target: docs/absent.md", errors
+        )
+
     def test_missing_reference_style_target_fails(self) -> None:
         errors = self.run_validation(
             {"README.md": "[guide]: docs/missing.md\n"}
