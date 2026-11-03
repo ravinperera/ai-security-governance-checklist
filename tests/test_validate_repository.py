@@ -375,6 +375,23 @@ class RepositoryValidationTests(unittest.TestCase):
             any("possible unredacted PEM private key header" in error for error in errors)
         )
 
+    def test_encrypted_pkcs8_private_key_header_fails_without_leaking_text(self) -> None:
+        marker = "-----BEGIN " + "ENCRYPTED PRIVATE KEY-----"
+        errors = self.run_validation(
+            {"docs/example.md": "# Unsafe example\n\n" + marker + "\n"}
+        )
+        self.assertEqual(
+            ["docs/example.md:3: possible unredacted PEM private key header"],
+            errors,
+        )
+        self.assertNotIn(marker, "\n".join(errors))
+
+    def test_encrypted_private_key_placeholder_passes(self) -> None:
+        errors = self.run_validation(
+            {"docs/example.md": "# Safe placeholder\n\n<redacted encrypted private key>\n"}
+        )
+        self.assertEqual([], errors)
+
     def test_redacted_secret_placeholders_pass(self) -> None:
         errors = self.run_validation(
             {
