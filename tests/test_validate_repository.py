@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 MODULE_PATH = Path(__file__).parents[1] / "scripts" / "validate_repository.py"
 SPEC = importlib.util.spec_from_file_location("validate_repository", MODULE_PATH)
@@ -23,6 +24,64 @@ class RepositoryValidationTests(unittest.TestCase):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(content, encoding="utf-8")
             return validation.validate(root)
+
+    def test_tracked_external_text_symlink_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            root = base / "repo"
+            root.mkdir()
+            outside = base / "outside.md"
+            outside.write_text("# Outside\n", encoding="utf-8")
+            link = root / "external.md"
+            link.symlink_to(outside)
+
+            with patch.object(validation, "repository_files", return_value=[link]):
+                errors = validation.validate(root)
+
+        self.assertEqual(
+            errors, ["external.md: tracked symlink escapes repository"]
+        )
+
+    def test_tracked_dangling_text_symlink_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            link = root / "missing.md"
+            link.symlink_to(root / "nonexistent.md")
+
+            with patch.object(validation, "repository_files", return_value=[link]):
+                errors = validation.validate(root)
+
+        self.assertEqual(
+            errors, ["missing.md: tracked symlink target missing or invalid"]
+        )
+
+    def test_tracked_text_symlink_to_directory_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            docs = root / "docs"
+            docs.mkdir()
+            link = root / "alias.md"
+            link.symlink_to(docs, target_is_directory=True)
+
+            with patch.object(validation, "repository_files", return_value=[link]):
+                errors = validation.validate(root)
+
+        self.assertEqual(
+            errors, ["alias.md: tracked symlink target is not a file"]
+        )
+
+    def test_tracked_text_symlink_to_internal_file_is_validated(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target = root / "original.md"
+            target.write_text("# Internal\n", encoding="utf-8")
+            link = root / "alias.md"
+            link.symlink_to(target)
+
+            with patch.object(validation, "repository_files", return_value=[link]):
+                errors = validation.validate(root)
+
+        self.assertEqual(errors, [])
 
     def test_valid_repository_passes(self) -> None:
         errors = self.run_validation(

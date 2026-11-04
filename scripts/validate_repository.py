@@ -417,7 +417,22 @@ def validate(root: Path) -> list[str]:
     errors: list[str] = []
 
     for path in repository_files(root):
-        if not path.exists() or path.suffix.casefold() not in TEXT_SUFFIXES:
+        if path.suffix.casefold() not in TEXT_SUFFIXES:
+            continue
+        if path.is_symlink():
+            relative = path.relative_to(root)
+            try:
+                target = path.resolve(strict=True)
+            except (OSError, RuntimeError):
+                errors.append(f"{relative}: tracked symlink target missing or invalid")
+                continue
+            if not target.is_relative_to(root):
+                errors.append(f"{relative}: tracked symlink escapes repository")
+                continue
+            if not target.is_file():
+                errors.append(f"{relative}: tracked symlink target is not a file")
+                continue
+        if not path.exists():
             continue
         errors.extend(check_text_file(path, root))
         errors.extend(check_secret_patterns(path, root))
