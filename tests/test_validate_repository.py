@@ -422,6 +422,49 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertEqual([], errors)
 
+    def test_synthetic_keys_in_common_config_and_text_files_are_flagged(self) -> None:
+        synthetic = "AKIA" + "1234567890ABCDEF"
+        filenames = (
+            ".env",
+            ".env.local",
+            "config/example.toml",
+            "config/example.ini",
+            "config/example.cfg",
+            "config/application.properties",
+            "notes/example.txt",
+        )
+        for filename in filenames:
+            with self.subTest(filename=filename):
+                errors = self.run_validation(
+                    {filename: f"example: {synthetic}\n"}
+                )
+                self.assertEqual(
+                    [f"{filename}:1: possible unredacted AWS access key ID"],
+                    errors,
+                )
+
+    def test_private_key_headers_in_pem_and_key_files_are_flagged(self) -> None:
+        for filename in ("certs/example.pem", "certs/example.key"):
+            with self.subTest(filename=filename):
+                errors = self.run_validation(
+                    {filename: "-----BEGIN " + "PRIVATE KEY-----\n"}
+                )
+                self.assertEqual(
+                    [f"{filename}:1: possible unredacted PEM private key header"],
+                    errors,
+                )
+
+    def test_redacted_config_values_pass_and_binary_assets_are_ignored(self) -> None:
+        synthetic = "AKIA" + "1234567890ABCDEF"
+        errors = self.run_validation(
+            {
+                ".env.example": "AWS_ACCESS_KEY_ID=AKIA<redacted>\n",
+                "keys/example.pem": "<redacted private key>\n",
+                "images/example.png": f"token: {synthetic}\n",
+            }
+        )
+        self.assertEqual([], errors)
+
     def test_private_key_header_fails(self) -> None:
         errors = self.run_validation(
             {
