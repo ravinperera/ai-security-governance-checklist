@@ -118,7 +118,7 @@ python3 -m unittest discover -s tests -p 'test_validate_repository.py' -v
 python3 scripts/validate_repository.py
 ```
 
-The validator checks tracked Markdown, CSV, JSON, and YAML files for UTF-8 text hygiene, validates local Markdown links, and verifies that CSV templates have usable, consistent headers and row widths. GitHub Actions runs the same checks without cloud credentials or repository write permissions.
+The validator checks tracked Markdown, CSV, JSON, YAML, Python, shell, and common text/configuration files (including `.env`, `.env.*`, TOML, INI, CFG, properties, TXT, PEM, and KEY) for text hygiene and narrow, high-confidence credential shapes. It also validates local Markdown links and verifies that CSV templates have usable, consistent headers and row widths. This is **not** a comprehensive secret scanner; binaries and untracked files are outside its coverage. GitHub Actions runs the same checks without cloud credentials or repository write permissions.
 
 ## Contributing
 
