@@ -12,7 +12,7 @@ from datetime import date
 from pathlib import Path
 from typing import Iterable
 
-TEXT_SUFFIXES = {".md", ".csv", ".json", ".yml", ".yaml", ".py", ".sh"}
+TEXT_SUFFIXES = {".md", ".csv", ".json", ".yml", ".yaml", ".py", ".sh", ".toml", ".ini", ".cfg", ".properties", ".txt", ".pem", ".key"}
 LINK_START_PATTERN = re.compile(r"!?\[[^\]\n]*\]\(")
 REFERENCE_LINK_PATTERN = re.compile(r"^ {0,3}\[[^\]\n]+\]:[ \t]*(<[^>\n]+>|[^ \t<>]+)")
 FENCE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
@@ -417,7 +417,11 @@ def validate(root: Path) -> list[str]:
     errors: list[str] = []
 
     for path in repository_files(root):
-        if path.suffix.casefold() not in TEXT_SUFFIXES:
+        name = path.name.casefold()
+        # Path(".env").suffix is empty; ".env.local" has suffix ".local".
+        if path.suffix.casefold() not in TEXT_SUFFIXES and not (
+            name == ".env" or name.startswith(".env.")
+        ):
             continue
         if path.is_symlink():
             relative = path.relative_to(root)
