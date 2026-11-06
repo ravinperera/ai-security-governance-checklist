@@ -17,6 +17,7 @@ All notable repository changes are recorded here. This project uses date-based e
 
 ### Changed
 
+- Tracked environment, configuration, text, PEM and key files now receive the existing high-confidence credential-shape checks; binary and untracked files remain out of scope.
 - Invalid UTF-8 in Markdown now produces a validation diagnostic without preventing checks of other files.
 - Credential-shape validation now detects encrypted PKCS#8 PEM private-key headers without displaying key material in diagnostics.
 - Tracked Python and shell scripts now receive the dependency-free text and credential-shape checks, with synthetic regression coverage.
