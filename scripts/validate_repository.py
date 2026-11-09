@@ -328,6 +328,16 @@ def inline_link_destinations(line: str) -> Iterable[str]:
                     break
 
 
+def mask_html_comments(text: str) -> str:
+    """Ignore commented-out links without changing their physical line numbers."""
+    return re.sub(
+        r"<!--.*?(?:-->|\Z)",
+        lambda match: re.sub(r"[^\n]", " ", match.group()),
+        text,
+        flags=re.DOTALL,
+    )
+
+
 def markdown_targets(text: str) -> Iterable[tuple[int, str]]:
     active_fence: str | None = None
     visible_lines: list[str] = []
@@ -351,7 +361,8 @@ def markdown_targets(text: str) -> Iterable[tuple[int, str]]:
 
         visible_lines.append(line)
 
-    searchable_text = mask_inline_code("\n".join(visible_lines))
+    # Mask inline code first: a literal `<!--` must not hide live links.
+    searchable_text = mask_html_comments(mask_inline_code("\n".join(visible_lines)))
     for number, line in enumerate(searchable_text.splitlines(), start=1):
         for destination in inline_link_destinations(line):
             yield number, destination.strip()
