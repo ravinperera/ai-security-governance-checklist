@@ -566,6 +566,53 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
+    def test_html_comments_hide_inline_and_reference_links(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    "# Guide\n\n"
+                    "[live](docs/guide.md)\n"
+                    "<!-- [retired](docs/missing-one.md) -->\n"
+                    "<!--\n"
+                    "[old]: docs/missing-two.md\n"
+                    "![old](docs/missing-three.png)\n"
+                    "-->\n"
+                ),
+                "docs/guide.md": "# Guide\n",
+            }
+        )
+        self.assertEqual(errors, [])
+
+    def test_unterminated_html_comment_hides_remaining_links(self) -> None:
+        errors = self.run_validation(
+            {"README.md": "# Guide\n<!--\n[retired](docs/missing.md)\n"}
+        )
+        self.assertEqual(errors, [])
+
+    def test_inline_code_comment_markers_do_not_hide_live_links(self) -> None:
+        errors = self.run_validation(
+            {"README.md": "`<!--` [live](docs/missing.md) `-->`\n"}
+        )
+        self.assertEqual(
+            ["README.md:1: missing local link target: docs/missing.md"], errors
+        )
+
+    def test_live_link_after_multiline_comment_keeps_line_number(self) -> None:
+        errors = self.run_validation(
+            {
+                "README.md": (
+                    "<!--\n"
+                    "[retired](docs/missing-old.md)\n"
+                    "-->\n"
+                    "[live](docs/missing-new.md)\n"
+                )
+            }
+        )
+        self.assertEqual(
+            ["README.md:4: missing local link target: docs/missing-new.md"],
+            errors,
+        )
+
     def test_text_hygiene_is_checked(self) -> None:
         errors = self.run_validation({"README.md": "# Example  "})
         self.assertTrue(any("trailing whitespace" in error for error in errors))
