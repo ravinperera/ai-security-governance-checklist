@@ -256,6 +256,12 @@ def check_example_template_schemas(root: Path) -> list[str]:
                 f"{example.relative_to(root)}: cannot compare schema ({exc})"
             )
             continue
+        except OSError as exc:
+            errors.append(
+                f"{example.relative_to(root)}: cannot compare schema "
+                f"({type(exc).__name__})"
+            )
+            continue
 
         if example_header != template_header:
             errors.append(
@@ -448,13 +454,21 @@ def validate(root: Path) -> list[str]:
                 errors.append(f"{relative}: tracked symlink target is not a file")
                 continue
         if not path.exists():
+            errors.append(f"{path.relative_to(root)}: tracked text file is missing")
             continue
-        errors.extend(check_text_file(path, root))
-        errors.extend(check_secret_patterns(path, root))
-        if path.suffix.casefold() == ".csv":
-            errors.extend(check_csv(path, root))
-        if path.suffix.casefold() == ".md":
-            errors.extend(check_markdown_links(path, root))
+        try:
+            errors.extend(check_text_file(path, root))
+            errors.extend(check_secret_patterns(path, root))
+            if path.suffix.casefold() == ".csv":
+                errors.extend(check_csv(path, root))
+            if path.suffix.casefold() == ".md":
+                errors.extend(check_markdown_links(path, root))
+        except OSError as exc:
+            # Report the error type, not raw OS details or file contents.
+            errors.append(
+                f"{path.relative_to(root)}: cannot read tracked text file "
+                f"({type(exc).__name__})"
+            )
 
     errors.extend(check_example_template_schemas(root))
     return errors

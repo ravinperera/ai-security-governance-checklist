@@ -83,6 +83,44 @@ class RepositoryValidationTests(unittest.TestCase):
 
         self.assertEqual(errors, [])
 
+    def test_unreadable_tracked_text_reports_error_and_checks_other_files(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            unreadable = root / "restricted.md"
+            unreadable.write_text("# Private test fixture\n", encoding="utf-8")
+            other = root / "other.md"
+            other.write_text("[missing](docs/absent.md)\n", encoding="utf-8")
+            original_read_bytes = Path.read_bytes
+
+            def read_bytes_or_fail(path: Path) -> bytes:
+                if path == unreadable:
+                    raise PermissionError("synthetic sensitive OS detail")
+                return original_read_bytes(path)
+
+            with (
+                patch.object(validation, "repository_files", return_value=[unreadable, other]),
+                patch.object(Path, "read_bytes", read_bytes_or_fail),
+            ):
+                errors = validation.validate(root)
+
+        self.assertEqual(
+            [
+                "restricted.md: cannot read tracked text file (PermissionError)",
+                "other.md:1: missing local link target: docs/absent.md",
+            ],
+            errors,
+        )
+        self.assertNotIn("synthetic sensitive OS detail", "\n".join(errors))
+
+    def test_missing_tracked_text_is_not_silently_skipped(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            missing = root / "missing.md"
+            with patch.object(validation, "repository_files", return_value=[missing]):
+                errors = validation.validate(root)
+
+        self.assertEqual(["missing.md: tracked text file is missing"], errors)
+
     def test_valid_repository_passes(self) -> None:
         errors = self.run_validation(
             {
@@ -359,6 +397,28 @@ class RepositoryValidationTests(unittest.TestCase):
             }
         )
         self.assertTrue(any("header does not match" in error for error in errors))
+
+    def test_schema_read_failure_does_not_abort_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            template = root / "templates" / "register.csv"
+            template.parent.mkdir()
+            template.write_text("Control ID,Owner\nA,Security\n", encoding="utf-8")
+            example = root / "examples" / "example-register.csv"
+            example.parent.mkdir()
+            example.write_text("Control ID,Owner\nB,Platform\n", encoding="utf-8")
+            with patch.object(
+                validation,
+                "csv_header",
+                side_effect=PermissionError("synthetic private OS message"),
+            ):
+                errors = validation.validate(root)
+
+        self.assertEqual(
+            ["examples/example-register.csv: cannot compare schema (PermissionError)"],
+            errors,
+        )
+        self.assertNotIn("synthetic private OS message", "\n".join(errors))
 
     def test_missing_local_markdown_link_fails(self) -> None:
         errors = self.run_validation(
