@@ -420,6 +420,41 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertNotIn("synthetic private OS message", "\n".join(errors))
 
+    def test_formula_like_csv_cells_are_rejected_without_echoing(self) -> None:
+        payloads = (
+            "=2+2",
+            " +2+2",
+            "-SUM(1)",
+            "@SUM(1)",
+            "\t=2+2",
+            '"=SUM(1,2)"',
+        )
+        for payload in payloads:
+            with self.subTest(payload=payload):
+                errors = self.run_validation(
+                    {"templates/sample.csv": f"Name,Value\nsample,{payload}\n"}
+                )
+                self.assertEqual(
+                    ["templates/sample.csv:2: potential spreadsheet formula in column 2"],
+                    errors,
+                )
+                self.assertNotIn(payload, "\n".join(errors))
+
+    def test_signed_numbers_and_plain_csv_text_remain_valid(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/sample.csv": (
+                    "Name,Value\n"
+                    "a,-12.5\n"
+                    "b,+1.25\n"
+                    "c,-3e2\n"
+                    "d,'=literal text\n"
+                    "e,not applicable\n"
+                )
+            }
+        )
+        self.assertEqual([], errors)
+
     def test_missing_local_markdown_link_fails(self) -> None:
         errors = self.run_validation(
             {"README.md": "# Example\n\nSee [missing](docs/missing.md).\n"}
