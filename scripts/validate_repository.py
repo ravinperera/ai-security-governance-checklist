@@ -17,6 +17,9 @@ LINK_START_PATTERN = re.compile(r"!?\[[^\]\n]*\]\(")
 REFERENCE_LINK_PATTERN = re.compile(r"^ {0,3}\[[^\]\n]+\]:[ \t]*(<[^>\n]+>|[^ \t<>]+)")
 FENCE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 ISO_DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+SAFE_SIGNED_NUMBER_PATTERN = re.compile(
+    r"[+-](?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?"
+)
 REGISTER_UNIQUE_KEYS = {
     "ai-control-ownership-matrix.csv": "Control ID",
     "ai-risk-register.csv": "Risk ID",
@@ -172,6 +175,19 @@ def check_csv(path: Path, root: Path) -> list[str]:
             errors.append(
                 f"{relative}:{number}: expected {expected} column(s), found {len(row)}"
             )
+
+        for index, value in enumerate(row, start=1):
+            # CSV quoting does not stop spreadsheets interpreting formula cells.
+            cell = value.lstrip()
+            if (
+                cell
+                and cell[0] in "=+-@"
+                and not SAFE_SIGNED_NUMBER_PATTERN.fullmatch(cell)
+            ):
+                errors.append(
+                    f"{relative}:{number}: potential spreadsheet formula "
+                    f"in column {index}"
+                )
 
     unique_key = register_unique_key(path)
     key_index = next(
