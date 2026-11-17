@@ -445,17 +445,17 @@ class RepositoryValidationTests(unittest.TestCase):
         for payload in payloads:
             with self.subTest(payload=payload):
                 errors = self.run_validation(
-                    {"templates/sample.csv": f"Name,{payload}\\nexample,ok\\n"}
+                    {"templates/sample.csv": f"Name,{payload}\nexample,ok\n"}
                 )
                 self.assertEqual(
                     ["templates/sample.csv:1: potential spreadsheet formula in column 2"],
                     errors,
                 )
-                self.assertNotIn(payload, "\\n".join(errors))
+                self.assertNotIn(payload, "\n".join(errors))
 
     def test_safe_csv_headers_remain_valid(self) -> None:
         errors = self.run_validation(
-            {"templates/sample.csv": "Name,Owner\\nexample,Security\\n"}
+            {"templates/sample.csv": "Name,Owner\nexample,Security\n"}
         )
         self.assertEqual([], errors)
 
