@@ -18,6 +18,7 @@ All notable repository changes are recorded here. This project uses date-based e
 ### Changed
 
 - CSV validation now flags formula-like spreadsheet cells without displaying their contents; signed numeric values remain valid.
+- CSV formula detection also covers header cells, not just data rows, without displaying cell contents.
 - Tracked-text file I/O failures and missing paths now produce concise validation errors without aborting other checks; example/template schema read failures do not expose raw OS details.
 - Markdown link validation ignores inactive HTML-comment links and reference definitions while preserving live links and line numbers.
 - Tracked environment, configuration, text, PEM and key files now receive the existing high-confidence credential-shape checks; binary and untracked files remain out of scope.

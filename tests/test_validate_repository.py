@@ -440,6 +440,25 @@ class RepositoryValidationTests(unittest.TestCase):
                 )
                 self.assertNotIn(payload, "\n".join(errors))
 
+    def test_formula_like_csv_headers_are_rejected_without_echoing(self) -> None:
+        payloads = ("=2+2", " @SUM(1)", '"=SUM(1,2)"', "\t-IF(1)")
+        for payload in payloads:
+            with self.subTest(payload=payload):
+                errors = self.run_validation(
+                    {"templates/sample.csv": f"Name,{payload}\nexample,ok\n"}
+                )
+                self.assertEqual(
+                    ["templates/sample.csv:1: potential spreadsheet formula in column 2"],
+                    errors,
+                )
+                self.assertNotIn(payload, "\n".join(errors))
+
+    def test_safe_csv_headers_remain_valid(self) -> None:
+        errors = self.run_validation(
+            {"templates/sample.csv": "Name,Owner\nexample,Security\n"}
+        )
+        self.assertEqual([], errors)
+
     def test_signed_numbers_and_plain_csv_text_remain_valid(self) -> None:
         errors = self.run_validation(
             {

@@ -129,6 +129,16 @@ def is_date_header(value: str) -> bool:
     )
 
 
+def is_spreadsheet_formula(value: str) -> bool:
+    """Identify potentially executable CSV cells without examining their context."""
+    cell = value.lstrip()
+    return bool(
+        cell
+        and cell[0] in "=+-@"
+        and not SAFE_SIGNED_NUMBER_PATTERN.fullmatch(cell)
+    )
+
+
 def check_csv(path: Path, root: Path) -> list[str]:
     relative = path.relative_to(root)
     try:
@@ -151,6 +161,12 @@ def check_csv(path: Path, root: Path) -> list[str]:
     errors: list[str] = []
     if not header or all(not value.strip() for value in header):
         return [f"{relative}: CSV header is empty"]
+
+    for index, value in enumerate(header, start=1):
+        if is_spreadsheet_formula(value):
+            errors.append(
+                f"{relative}:1: potential spreadsheet formula in column {index}"
+            )
 
     blank_headers = [
         str(index + 1) for index, value in enumerate(header) if not value.strip()
@@ -178,12 +194,7 @@ def check_csv(path: Path, root: Path) -> list[str]:
 
         for index, value in enumerate(row, start=1):
             # CSV quoting does not stop spreadsheets interpreting formula cells.
-            cell = value.lstrip()
-            if (
-                cell
-                and cell[0] in "=+-@"
-                and not SAFE_SIGNED_NUMBER_PATTERN.fullmatch(cell)
-            ):
+            if is_spreadsheet_formula(value):
                 errors.append(
                     f"{relative}:{number}: potential spreadsheet formula "
                     f"in column {index}"
