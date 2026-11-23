@@ -17,6 +17,7 @@ All notable repository changes are recorded here. This project uses date-based e
 
 ### Changed
 
+- Duplicate CSV header diagnostics now report column positions instead of echoing untrusted header values into validation logs.
 - CSV validation now flags formula-like spreadsheet cells without displaying their contents; signed numeric values remain valid.
 - CSV formula detection also covers header cells, not just data rows, without displaying cell contents.
 - Tracked-text file I/O failures and missing paths now produce concise validation errors without aborting other checks; example/template schema read failures do not expose raw OS details.
