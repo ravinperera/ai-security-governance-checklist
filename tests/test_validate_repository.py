@@ -136,6 +136,36 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertTrue(any("duplicate header" in error for error in errors))
 
+    def test_duplicate_csv_headers_do_not_echo_untrusted_values(self) -> None:
+        header_value = "internal-only-reference"
+        errors = self.run_validation(
+            {
+                "templates/register.csv": (
+                    f"Name,{header_value}, {header_value}\n"
+                    "example,first,second\n"
+                )
+            }
+        )
+        self.assertEqual(
+            ["templates/register.csv: duplicate header column(s): 2, 3"],
+            errors,
+        )
+        self.assertNotIn(header_value, "\n".join(errors))
+
+    def test_separate_duplicate_header_groups_report_distinct_columns(self) -> None:
+        errors = self.run_validation(
+            {
+                "templates/register.csv": (
+                    "Owner, owner ,Review, review\n"
+                    "a,b,c,d\n"
+                )
+            }
+        )
+        self.assertEqual(
+            ["templates/register.csv: duplicate header column(s): 1, 2; 3, 4"],
+            errors,
+        )
+
     def test_blank_csv_header_fails(self) -> None:
         errors = self.run_validation(
             {"templates/register.csv": "Control ID,,Owner\nAI-01,Open,Security\n"}
