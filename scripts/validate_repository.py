@@ -176,12 +176,18 @@ def check_csv(path: Path, root: Path) -> list[str]:
             f"{relative}: blank header column(s): {', '.join(blank_headers)}"
         )
 
-    normalized = [value.strip().casefold() for value in header if value.strip()]
-    duplicates = sorted(
-        {value for value in normalized if normalized.count(value) > 1}
-    )
-    if duplicates:
-        errors.append(f"{relative}: duplicate header(s): {', '.join(duplicates)}")
+    # Headers are untrusted input: keep their values out of CI diagnostics.
+    header_positions: dict[str, list[int]] = {}
+    for column, value in enumerate(header, start=1):
+        normalized_name = value.strip().casefold()
+        if normalized_name:
+            header_positions.setdefault(normalized_name, []).append(column)
+    duplicate_columns = [
+        positions for positions in header_positions.values() if len(positions) > 1
+    ]
+    if duplicate_columns:
+        groups = "; ".join(", ".join(map(str, positions)) for positions in duplicate_columns)
+        errors.append(f"{relative}: duplicate header column(s): {groups}")
 
     expected = len(header)
     for number, row in zip(row_start_lines[1:], rows[1:]):
