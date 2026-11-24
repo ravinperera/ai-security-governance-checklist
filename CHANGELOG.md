@@ -17,6 +17,7 @@ All notable repository changes are recorded here. This project uses date-based e
 
 ### Changed
 
+- Invalid CSV date diagnostics identify the column position rather than echoing untrusted header values.
 - Duplicate CSV header diagnostics now report column positions instead of echoing untrusted header values into validation logs.
 - CSV validation now flags formula-like spreadsheet cells without displaying their contents; signed numeric values remain valid.
 - CSV formula detection also covers header cells, not just data rows, without displaying cell contents.
