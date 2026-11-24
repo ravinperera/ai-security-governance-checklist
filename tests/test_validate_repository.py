@@ -239,7 +239,7 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertIn(
             "templates/approved-ai-tools-register.csv:4: "
-            "Review Date must use YYYY-MM-DD",
+            "column 2 must use YYYY-MM-DD",
             errors,
         )
 
@@ -273,7 +273,7 @@ class RepositoryValidationTests(unittest.TestCase):
             {"templates/register.csv": "\ufeffReview Date,Owner\n2026-02-30,Security\n"}
         )
         self.assertIn(
-            "templates/register.csv:2: Review Date must use YYYY-MM-DD", errors
+            "templates/register.csv:2: column 1 must use YYYY-MM-DD", errors
         )
 
     def test_utf8_bom_example_header_matches_plain_template(self) -> None:
@@ -381,7 +381,7 @@ class RepositoryValidationTests(unittest.TestCase):
                 )
             }
         )
-        self.assertTrue(any("Due Date must use YYYY-MM-DD" in error for error in errors))
+        self.assertTrue(any("column 2 must use YYYY-MM-DD" in error for error in errors))
 
     def test_non_iso_governance_date_fails(self) -> None:
         errors = self.run_validation(
@@ -391,7 +391,26 @@ class RepositoryValidationTests(unittest.TestCase):
                 )
             }
         )
-        self.assertTrue(any("Review Date must use YYYY-MM-DD" in error for error in errors))
+        self.assertTrue(any("column 2 must use YYYY-MM-DD" in error for error in errors))
+
+    def test_invalid_dates_do_not_echo_untrusted_headers(self) -> None:
+        header = "Synthetic confidential label Date"
+        errors = self.run_validation(
+            {
+                "templates/register.csv": (
+                    f"Owner,{header},Exception expiry\n"
+                    "Security,invalid,2026-02-30\n"
+                )
+            }
+        )
+        self.assertEqual(
+            [
+                "templates/register.csv:2: column 2 must use YYYY-MM-DD",
+                "templates/register.csv:2: column 3 must use YYYY-MM-DD",
+            ],
+            errors,
+        )
+        self.assertNotIn(header, "\n".join(errors))
 
     def test_valid_and_blank_governance_dates_pass(self) -> None:
         errors = self.run_validation(

@@ -238,12 +238,10 @@ def check_csv(path: Path, root: Path) -> list[str]:
                 seen[normalized_value] = number
 
     date_columns = [
-        (index, name.strip())
-        for index, name in enumerate(header)
-        if is_date_header(name)
+        index for index, name in enumerate(header) if is_date_header(name)
     ]
     for number, row in zip(row_start_lines[1:], rows[1:]):
-        for index, name in date_columns:
+        for index in date_columns:
             if len(row) <= index:
                 continue
             value = row[index].strip()
@@ -257,7 +255,7 @@ def check_csv(path: Path, root: Path) -> list[str]:
                 valid = False
             if not valid:
                 errors.append(
-                    f"{relative}:{number}: {name} must use YYYY-MM-DD"
+                    f"{relative}:{number}: column {index + 1} must use YYYY-MM-DD"
                 )
 
     return errors
