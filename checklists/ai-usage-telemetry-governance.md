@@ -56,6 +56,19 @@ For a copyable evidence record, use [AI Telemetry Collection Approval Record](..
 - [ ] Access to identifiable workforce telemetry is narrower than access to aggregate engineering/cost dashboards.
 - [ ] People can understand, where required, what is collected, why, how long it is kept, and who can access it.
 
+### Disclosure Risk In Dashboards And Exports
+
+Pseudonymised or aggregated usage data can still reveal an individual's activity or a confidential project's workload when combined with other information. Treat disclosure risk as a property of the released views and their audience, not only of the stored rows.
+
+- [ ] Assess singling-out and linkage risk from rare task categories, small teams, precise timestamps, outliers and stable identifiers; restrict any identity mapping separately from routine analytics.
+- [ ] Define risk-based aggregation rules (for example minimum distinct contributors, coarser time windows, suppression or restricted access). Count contributors rather than requests when protecting people; a single person can generate many requests. No universal group size guarantees anonymity.
+- [ ] Apply the rules consistently to dashboards, drill-downs, API queries and downloaded reports. Assess overlapping filters, totals, historical releases and repeated queries together; suppress or generalise related values when subtraction would reveal a protected group. Never represent suppressed values as measured zero.
+- [ ] Record the approved audience, release rules, residual disclosure risk, review owner and synthetic verification evidence. Reassess when granularity, filtering, external linkage or the audience changes.
+
+**Synthetic verification scenario (not an executed test):** Give a fictional team six contributors and show an exact weekly token total. A second otherwise identical filter excludes one contributor. Even if both results satisfy an illustrative minimum of five contributors, their difference reveals the excluded person's token count. Verify that the approved release policy prevents that inference (for example by restricting the overlapping view or releasing only sufficiently generalised results), including through exports. Also verify that an analyst cannot access the identity mapping merely because they can view the aggregate dashboard.
+
+For background on disclosure risk and governance, see [NIST SP 800-188](https://csrc.nist.gov/pubs/sp/800/188/final) (September 2023). These are local AI-telemetry controls, not a claim of anonymity, legal compliance or tested implementation.
+
 ## Outcome And Productivity Attribution
 
 Usage telemetry can be associated with downstream events such as commits, test runs, pull requests, merges, reverts, deployments, tickets, or review outcomes. Those associations can be useful for analysis, but they are usually **proxies**, not proof that the AI caused the outcome.
