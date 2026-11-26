@@ -54,6 +54,25 @@ These are requirements for adopting systems, not runtime tests implemented or ex
 - [ ] Budget ceilings do not authorize crossing a provider, tenancy, region, retention, or data boundary.
 - [ ] When no approved capable route remains, the workflow stops or requests explicit approval instead of silently degrading.
 
+### Shared Hard Ceilings And Outstanding Usage
+
+- [ ] Before dispatch, atomically reserve a conservative upper bound for each attempt against every applicable hard ceiling (task, tenant, project and period). Include committed usage and all outstanding reservations in admission; independent reads of remaining budget are insufficient. Deny or queue when the reservation cannot be made or the budget state is unavailable.
+- [ ] Bound input, output, tool and other chargeable usage using the applicable pricing/quota basis, including uncached prices unless a discount is guaranteed. If exposure cannot be bounded (for example, an unbounded provider-side operation), do not describe that route as enforcing a hard ceiling; restrict or reject it for hard-ceiling workloads.
+- [ ] Delegated workers, retries and fallbacks draw from the same parent budget. Child allocations cannot create additional capacity; account for each charge once at each applicable scope and reserve additional exposure before any new dispatch.
+- [ ] Persist reservation, attempt and budget-window identifiers before dispatch. Settle reservations idempotently against authoritative usage, releasing only the confirmed unused amount; record overruns or inconsistent records as incidents and stop further admission until reconciled.
+- [ ] Treat ambiguous timeouts, cancellations and missing usage reports as potentially chargeable. Retain the outstanding exposure until non-execution or final usage is confirmed; expiration of a local lease alone is not proof. Reconcile late or duplicate events against the original attempt and window, including across restarts and period rollover.
+
+### Shared Budget Adopter Verification
+
+These synthetic scenarios are an acceptance protocol for adopting systems, not runtime experiments executed by this repository. Record reservation/settlement events, ledger totals, actual dispatch decisions and the policy version without retaining prompt content.
+
+| Scenario | Expected evidence |
+| --- | --- |
+| Concurrent requests: a ceiling of 10 units, two workers each requesting 6 | At most one dispatch is admitted; the other queues or stops, and parent and child accounting reconcile |
+| Timeout with 6 units reserved and no final usage | A second 6-unit dispatch is denied under the same 10-unit ceiling; confirmed final usage of 4 releases 2, and a duplicate settlement does not release again |
+| Restart or period rollover with an unresolved attempt | Outstanding exposure is recovered, not silently discarded; a late settlement is linked to the original window, and new dispatches respect all applicable ceilings |
+| Actual usage exceeds its reservation | Overrun is recorded, not hidden by capping the ledger; further affected admission stops pending reconciliation |
+
 ## Governed Fallbacks
 
 - [ ] Fallback order is explicit and testable rather than inferred dynamically from cheapest current price.
