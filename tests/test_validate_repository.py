@@ -447,6 +447,74 @@ class RepositoryValidationTests(unittest.TestCase):
         )
         self.assertTrue(any("header does not match" in error for error in errors))
 
+    def test_schema_comparison_does_not_read_external_paths(self) -> None:
+        for location in ("example", "template", "examples_dir", "templates_dir"):
+            with self.subTest(location=location), tempfile.TemporaryDirectory() as directory:
+                base = Path(directory)
+                root = base / "repo"
+                root.mkdir()
+                outside = base / "private"
+                outside.mkdir()
+                examples = root / "examples"
+                templates = root / "templates"
+                for name, folder in (("examples_dir", examples), ("templates_dir", templates)):
+                    if name == location:
+                        folder.symlink_to(outside, target_is_directory=True)
+                    else:
+                        folder.mkdir()
+                example = examples / "example-register.csv"
+                template = templates / "register.csv"
+                for name, path in (("example", example), ("template", template)):
+                    if name == location:
+                        target = outside / path.name
+                        target.write_text("Name,Owner\n", encoding="utf-8")
+                        path.symlink_to(target)
+                    else:
+                        path.write_text("Name,Owner\n", encoding="utf-8")
+
+                with patch.object(validation, "csv_header") as read_header:
+                    errors = validation.check_example_template_schemas(root)
+
+                read_header.assert_not_called()
+                self.assertEqual(
+                    ["examples/example-register.csv: cannot compare schema "
+                     "(path outside repository or not a file)"],
+                    errors,
+                )
+                self.assertNotIn(str(outside), "\n".join(errors))
+
+    def test_schema_comparison_rejects_dangling_template_without_reading(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            example = root / "examples" / "example-register.csv"
+            template = root / "templates" / "register.csv"
+            example.parent.mkdir()
+            template.parent.mkdir()
+            example.write_text("Name,Owner\n", encoding="utf-8")
+            template.symlink_to(root / "absent.csv")
+            with patch.object(validation, "csv_header") as read_header:
+                errors = validation.check_example_template_schemas(root)
+            read_header.assert_not_called()
+            self.assertEqual(
+                ["examples/example-register.csv: cannot compare schema (FileNotFoundError)"],
+                errors,
+            )
+
+    def test_schema_comparison_allows_internal_template_alias(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            example = root / "examples" / "example-register.csv"
+            template = root / "templates" / "register.csv"
+            example.parent.mkdir()
+            template.parent.mkdir()
+            example.write_text("Name,Owner\n", encoding="utf-8")
+            target = root / "internal.csv"
+            target.write_text("Name,Owner\n", encoding="utf-8")
+            template.symlink_to(target)
+            self.assertEqual([], validation.check_example_template_schemas(root))
+            template.unlink()
+            self.assertEqual([], validation.check_example_template_schemas(root))
+
     def test_schema_read_failure_does_not_abort_validation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

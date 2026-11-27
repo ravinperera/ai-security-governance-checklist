@@ -276,18 +276,31 @@ def check_example_template_schemas(root: Path) -> list[str]:
     errors: list[str] = []
     for example in sorted(examples_dir.glob("example-*.csv")):
         template = templates_dir / example.name.removeprefix("example-")
-        if not template.exists():
-            continue
-
         try:
-            example_header = csv_header(example)
-            template_header = csv_header(template)
+            if not template.exists() and not template.is_symlink():
+                continue
+
+            # This second pass must not reopen paths rejected by the first pass.
+            resolved_example = example.resolve(strict=True)
+            resolved_template = template.resolve(strict=True)
+            if any(
+                not candidate.is_relative_to(root.resolve()) or not candidate.is_file()
+                for candidate in (resolved_example, resolved_template)
+            ):
+                errors.append(
+                    f"{example.relative_to(root)}: cannot compare schema "
+                    "(path outside repository or not a file)"
+                )
+                continue
+
+            example_header = csv_header(resolved_example)
+            template_header = csv_header(resolved_template)
         except (csv.Error, UnicodeDecodeError) as exc:
             errors.append(
                 f"{example.relative_to(root)}: cannot compare schema ({exc})"
             )
             continue
-        except OSError as exc:
+        except (OSError, RuntimeError) as exc:
             errors.append(
                 f"{example.relative_to(root)}: cannot compare schema "
                 f"({type(exc).__name__})"
